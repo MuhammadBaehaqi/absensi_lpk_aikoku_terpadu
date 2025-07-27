@@ -50,6 +50,40 @@ if (!empty($id_pengguna)) {
                 margin-left: 0;
             }
         }
+        /* Form input dan select saat dark mode */
+        .dark-mode .form-control {
+            background-color: #2c2c2c;
+            color: #fff;
+            border: 1px solid #555;
+        }
+
+        /* Placeholder input di dark mode */
+        .dark-mode .form-control::placeholder {
+            color: #aaa;
+        }
+        /* Card dan isinya saat dark mode */
+        .dark-mode .card {
+            background-color: #1e1e1e;
+            color: #fff;
+            border: 1px solid #444;
+        }
+
+        .dark-mode .card-title {
+            color: #fff;
+        }
+
+        /* List-group saat dark mode */
+        .dark-mode .list-group-item {
+            background-color: #2c2c2c;
+            color: #fff;
+            border-color: #444;
+        }
+
+        /* Optional: chart background container */
+        .dark-mode canvas {
+            background-color: #1e1e1e;
+        }
+
     </style>
 </head>
 

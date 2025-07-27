@@ -72,6 +72,54 @@ $data = mysqli_query($koneksi, "
                 margin-left: 0;
             }
         }
+
+        /* Warna tabel saat dark mode */
+        .dark-mode .table {
+            background-color: #1f1f1f;
+            color: #f1f1f1;
+        }
+
+        .dark-mode .table th {
+            background-color: #2c2f33;
+            color: #ffffff;
+        }
+
+        .dark-mode .table td {
+            background-color: #1f1f1f;
+            /* <- ini penting! agar td tidak putih */
+            color: #f1f1f1;
+            border-color: #444;
+            /* agar tidak terlalu terang */
+        }
+
+        /* Hover baris */
+        .dark-mode .table tbody tr:hover {
+            background-color: #2a2a2a;
+        }
+
+        /* Warna tombol tetap kontras di dark mode */
+        .dark-mode .btn-success {
+            background-color: #198754;
+            border-color: #198754;
+            color: white;
+        }
+
+        .dark-mode .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+
+        .dark-mode .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: white;
+        }
+
+        .dark-mode .table-bordered th,
+        .dark-mode .table-bordered td {
+            border: 1px solid #444 !important;
+        }
     </style>
 </head>
 

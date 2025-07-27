@@ -53,6 +53,28 @@ if (isset($_POST['submit'])) {
                 margin-left: 0;
             }
         }
+        * Tambahan untuk dark mode pada kelola_user.php */
+        .dark-mode .main-content {
+            background-color: #1f1f1f;
+            color: white;
+        }
+
+        .dark-mode input,
+        .dark-mode select,
+        .dark-mode .form-control {
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+        }
+
+        .dark-mode input::placeholder {
+            color: #ccc;
+        }
+
+        .dark-mode label {
+            color: #ddd;
+        }
+    </style>
     </style>
 </head>
 

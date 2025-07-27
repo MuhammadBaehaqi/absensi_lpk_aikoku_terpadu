@@ -5,38 +5,36 @@ include '../includes/config.php';
 $bulan = $_GET['bulan'] ?? date('m');
 $tahun = $_GET['tahun'] ?? date('Y');
 
-// Ambil semua siswa
-$siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='siswa'");
+// pagination
+$limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 10;
+$page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+$offset = ($page - 1) * $limit;
 
-// Siapkan array rekap
-$rekap = [];
+// total siswa (untuk hitung total halaman)
+$total_siswa = mysqli_fetch_row(mysqli_query($koneksi, "SELECT COUNT(*) FROM tb_pengguna WHERE role='siswa'"))[0];
+$total_pages = ceil($total_siswa / $limit);
 
-while ($s = mysqli_fetch_assoc($siswa)) {
-    $id = $s['id_pengguna'];
-    $nama = $s['nama_lengkap'];
-
-    $query = mysqli_query($koneksi, "
-        SELECT keterangan, COUNT(*) AS total 
-        FROM tb_absensi 
-        WHERE id_pengguna='$id' 
-        AND MONTH(tanggal)='$bulan' AND YEAR(tanggal)='$tahun'
-        GROUP BY keterangan
-    ");
-
-    $rekap[$id] = [
-        'nama' => $nama,
-        'Hadir' => 0,
-        'Izin' => 0,
-        'Sakit' => 0,
-        'Alpha' => 0
-    ];
-
-    while ($r = mysqli_fetch_assoc($query)) {
-        $rekap[$id][$r['keterangan']] = $r['total'];
-    }
-}
+// ambil rekap per siswa (agregasi langsung di SQL, efisien)
+$sql = "
+    SELECT 
+        p.id_pengguna,
+        p.nama_lengkap,
+        SUM(CASE WHEN a.keterangan = 'Hadir' THEN 1 ELSE 0 END)  AS Hadir,
+        SUM(CASE WHEN a.keterangan = 'Izin' THEN 1 ELSE 0 END)   AS Izin,
+        SUM(CASE WHEN a.keterangan = 'Sakit' THEN 1 ELSE 0 END)  AS Sakit,
+        SUM(CASE WHEN a.keterangan = 'Alpha' THEN 1 ELSE 0 END)  AS Alpha
+    FROM tb_pengguna p
+    LEFT JOIN tb_absensi a 
+        ON a.id_pengguna = p.id_pengguna
+        AND MONTH(a.tanggal) = '$bulan'
+        AND YEAR(a.tanggal)  = '$tahun'
+    WHERE p.role = 'siswa'
+    GROUP BY p.id_pengguna, p.nama_lengkap
+    ORDER BY p.nama_lengkap ASC
+    LIMIT $limit OFFSET $offset
+";
+$rekap = mysqli_query($koneksi, $sql);
 ?>
-
 <!DOCTYPE html>
 <html>
 
@@ -62,6 +60,42 @@ while ($s = mysqli_fetch_assoc($siswa)) {
                 margin-left: 0;
             }
         }
+
+        /* Dark mode */
+        .dark-mode .table {
+            background-color: #1f1f1f;
+            color: #f1f1f1;
+        }
+
+        .dark-mode .table th {
+            background-color: #2c2f33;
+            color: #ffffff;
+        }
+
+        .dark-mode .table td {
+            background-color: #1f1f1f;
+            color: #f1f1f1;
+            border-color: #444;
+        }
+
+        .dark-mode .table tbody tr:hover {
+            background-color: #2a2a2a;
+        }
+
+        .dark-mode .table-bordered th,
+        .dark-mode .table-bordered td {
+            border: 1px solid #444 !important;
+        }
+
+        .dark-mode .form-control {
+            background-color: #2c2c2c;
+            color: #fff;
+            border: 1px solid #555;
+        }
+
+        .dark-mode .form-control::placeholder {
+            color: #aaa;
+        }
     </style>
 </head>
 
@@ -69,6 +103,7 @@ while ($s = mysqli_fetch_assoc($siswa)) {
     <?php include '../includes/sidebar.php'; ?>
     <div class="main-content container mt-5">
         <h3>Rekap Absensi Semua Siswa</h3>
+
         <form method="GET" class="row g-3 mb-4">
             <div class="col-md-4">
                 <label>Bulan</label>
@@ -82,10 +117,21 @@ while ($s = mysqli_fetch_assoc($siswa)) {
             </div>
             <div class="col-md-3">
                 <label>Tahun</label>
-                <input type="number" name="tahun" class="form-control" value="<?= $tahun ?>" required>
+                <input type="number" name="tahun" class="form-control" value="<?= htmlspecialchars($tahun) ?>" required>
+            </div>
+            <div class="col-md-2">
+                <label>Tampilkan</label>
+                <select name="limit" class="form-control">
+                    <?php foreach ([5, 10, 20, 50] as $opt): ?>
+                        <option value="<?= $opt ?>" <?= ($limit == $opt ? 'selected' : '') ?>><?= $opt ?> data</option>
+                    <?php endforeach; ?>
+                </select>
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <button class="btn btn-primary w-100">Tampilkan</button>
+            </div>
+            <div class="col-md-1 d-flex align-items-end">
+                <a href="rekap_bulanan_semua.php" class="btn btn-warning w-100">Reset</a>
             </div>
         </form>
 
@@ -101,25 +147,39 @@ while ($s = mysqli_fetch_assoc($siswa)) {
                 </tr>
             </thead>
             <tbody>
-                <?php $no = 1;
-                foreach ($rekap as $id => $r): ?>
+                <?php
+                $no = $offset + 1;
+                while ($r = mysqli_fetch_assoc($rekap)): ?>
                     <tr>
                         <td><?= $no++ ?></td>
-                        <td><?= $r['nama'] ?></td>
-                        <td><?= $r['Hadir'] ?></td>
-                        <td><?= $r['Izin'] ?></td>
-                        <td><?= $r['Sakit'] ?></td>
-                        <td><?= $r['Alpha'] ?></td>
+                        <td><?= htmlspecialchars($r['nama_lengkap']) ?></td>
+                        <td><?= (int) $r['Hadir'] ?></td>
+                        <td><?= (int) $r['Izin'] ?></td>
+                        <td><?= (int) $r['Sakit'] ?></td>
+                        <td><?= (int) $r['Alpha'] ?></td>
                     </tr>
-                <?php endforeach; ?>
+                <?php endwhile; ?>
             </tbody>
         </table>
+
+        <nav>
+            <ul class="pagination">
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                        <a class="page-link"
+                            href="?bulan=<?= $bulan ?>&tahun=<?= $tahun ?>&limit=<?= $limit ?>&page=<?= $i ?>">
+                            <?= $i ?>
+                        </a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
+        </nav>
+
         <a href="rekap_bulanan_semua_pdf.php?bulan=<?= $bulan ?>&tahun=<?= $tahun ?>" target="_blank"
             class="btn btn-danger mt-3">
             Cetak PDF Semua Siswa
         </a>
-
-        <a href="../admin/dashboard_admin.php" class="btn btn-secondary">Kembali</a>
+        <a href="../admin/dashboard_admin.php" class="btn btn-secondary mt-3">Kembali</a>
     </div>
 </body>
 

@@ -9,6 +9,9 @@ $tanggal = date('Y-m-d');
 $query = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_pengguna WHERE role='siswa'");
 $data = mysqli_fetch_assoc($query);
 $totalSiswa = $data['total'] ?? 0;
+// Total admin
+$query = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_pengguna WHERE role='admin'");
+$totalAdmin = mysqli_fetch_assoc($query)['total'] ?? 0;
 
 // Hadir
 $query = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_absensi WHERE tanggal = '$tanggal' AND keterangan = 'Hadir'");
@@ -66,6 +69,16 @@ $grafik = [
                 ['Alpha', $alpha, 'danger'],
                 ['Belum Absen', $belumAbsen, 'secondary']
             ];
+            $cards = [
+                ['Total Admin', $totalAdmin, 'dark'], // ← Tambahan baru
+                ['Total Siswa', $totalSiswa, 'primary'],
+                ['Hadir', $hadir, 'success'],
+                ['Izin', $izin, 'warning'],
+                ['Sakit', $sakit, 'info'],
+                ['Alpha', $alpha, 'danger'],
+                ['Belum Absen', $belumAbsen, 'secondary']
+            ];
+
             foreach ($cards as [$label, $value, $color]) {
                 echo "
                 <div class='col-md-2'>
@@ -90,7 +103,7 @@ $grafik = [
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        
+
         // Grafik
         const ctx = document.getElementById('grafikBulanan').getContext('2d');
         new Chart(ctx, {

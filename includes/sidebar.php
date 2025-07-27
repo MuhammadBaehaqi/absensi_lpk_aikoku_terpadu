@@ -1,3 +1,21 @@
+<?php
+$current = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+
+$pageTitles = [
+    'dashboard_admin.php' => 'Dashboard Admin',
+    'kelola_user.php' => 'Kelola User',
+    'input_manual.php' => 'Input Absensi Manual',
+    'verifikasi_izin.php' => 'Verifikasi Izin/Sakit',
+    'data_absensi.php' => 'Lihat Data Absensi',
+    'rekap_bulanan.php' => 'Rekap Bulanan Siswa',
+    'rekap_bulanan_semua.php' => 'Rekap Semua Siswa Bulanan',
+    'rekap_mingguan.php' => 'Rekap Mingguan Siswa',
+    'rekap_mingguan_semua.php' => 'Rekap Mingguan Semua',
+];
+
+$judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -67,12 +85,19 @@
             margin-bottom: 0.25rem;
             letter-spacing: 0.5px;
         }
+.nav-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: normal;
+}
 
-        .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            font-weight: bold;
-            border-radius: 5px;
-        }
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    font-weight: 600; /* jangan bold penuh */
+    border-radius: 5px;
+}
+
 
         .topbar {
             position: fixed;
@@ -184,6 +209,7 @@
         .dark-mode .topbar {
             background-color: #000;
         }
+        
     </style>
 </head>
 
@@ -194,54 +220,62 @@
 
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar text-white p-3">
-        <div class="d-flex align-items-center mb-3">
-            <img src="../img/logo.png" alt="Logo" class="sidebar-logo rounded-circle">
-            <div class="sidebar-brand">LPK AIKOKU TERPADU</div>
-        </div>
+    <div class="d-flex align-items-center mb-3">
+        <img src="../img/logo.png" alt="Logo" class="sidebar-logo rounded-circle">
+        <div class="sidebar-brand">LPK AIKOKU TERPADU</div>
+    </div>
 
-        <ul class="nav flex-column">
-            <li class="nav-item mb-2">
-                <a href="../admin/dashboard_admin.php" class="nav-link text-white fw-bold">
+    <ul class="nav flex-column">
+        <li class="nav-item mb-2">
+            <a href="../admin/dashboard_admin.php" class="nav-link text-white <?= $current === 'dashboard_admin.php' ? 'active' : '' ?>">
                     <i class="bi bi-speedometer2 me-2"></i>Dashboard
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="../admin/kelola_user.php" class="nav-link text-white">
+                <a href="../admin/kelola_user.php"
+                    class="nav-link text-white <?= $current === 'kelola_user.php' ? 'active' : '' ?>">
                     <i class="bi bi-people me-2"></i>Kelola User
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="../absensi/input_manual.php" class="nav-link text-white">
+                <a href="../absensi/input_manual.php"
+                    class="nav-link text-white <?= $current === 'input_manual.php' ? 'active' : '' ?>">
                     <i class="bi bi-pencil-square me-2"></i>Input Absensi Manual
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="../admin/verifikasi_izin.php" class="nav-link text-white">
+                <a href="../admin/verifikasi_izin.php"
+                    class="nav-link text-white <?= $current === 'verifikasi_izin.php' ? 'active' : '' ?>">
                     <i class="bi bi-check-circle me-2"></i>Verifikasi Izin/Sakit
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="../absensi/data_absensi.php" class="nav-link text-white">
+                <a href="../absensi/data_absensi.php"
+                    class="nav-link text-white <?= $current === 'data_absensi.php' ? 'active' : '' ?>">
                     <i class="bi bi-table me-2"></i>Lihat Data Absensi
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="../absensi/rekap_bulanan.php" class="nav-link text-white">
+                <a href="../absensi/rekap_bulanan.php"
+                    class="nav-link text-white <?= $current === 'rekap_bulanan.php' ? 'active' : '' ?>">
                     <i class="bi bi-bar-chart me-2"></i>Rekap Bulanan Siswa
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="../absensi/rekap_bulanan_semua.php" class="nav-link text-white">
+                <a href="../absensi/rekap_bulanan_semua.php"
+                    class="nav-link text-white <?= $current === 'rekap_bulanan_semua.php' ? 'active' : '' ?>">
                     <i class="bi bi-bar-chart-line me-2"></i>Rekap Semua Siswa Bulanan
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="../absensi/rekap_mingguan.php" class="nav-link text-white">
+                <a href="../absensi/rekap_mingguan.php"
+                    class="nav-link text-white <?= $current === 'rekap_mingguan.php' ? 'active' : '' ?>">
                     <i class="bi bi-calendar-week me-2"></i>Rekap Mingguan Siswa
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="../absensi/rekap_mingguan_semua.php" class="nav-link text-white">
+                <a href="../absensi/rekap_mingguan_semua.php"
+                    class="nav-link text-white <?= $current === 'rekap_mingguan_semua.php' ? 'active' : '' ?>">
                     <i class="bi bi-calendar-range me-2"></i>Rekap Mingguan Semua
                 </a>
             </li>
@@ -254,9 +288,9 @@
     </div>
 
     <!-- Topbar -->
-    <div class="topbar">
-        <button id="openSidebar" class="btn btn-outline-light btn-sm d-lg-none"><i class="bi bi-list"></i></button>
-        <strong>Dashboard Admin</strong>
+<div class="topbar">
+    <button id="openSidebar" class="btn btn-outline-light btn-sm d-lg-none"><i class="bi bi-list"></i></button>
+    <strong><?= $judulHalaman ?></strong>
         <div class="d-flex align-items-center gap-3">
             <span><i class="bi bi-person-circle"></i> <?= $_SESSION['username']; ?> (<?= $_SESSION['role']; ?>)</span>
             <button id="toggleMode" class="btn btn-outline-light btn-sm">🌙</button>
@@ -297,25 +331,25 @@
         });
     </script>
     <script>
-        // Tombol toggle
-        const toggleModeBtn = document.getElementById('toggleMode');
-        const body = document.body;
+    const toggleModeBtn = document.getElementById('toggleMode');
+    const body = document.body;
 
-        // Aktifkan dark mode jika sebelumnya sudah disimpan di localStorage
-        if (localStorage.getItem('theme') === 'dark') {
-            body.classList.add('dark-mode');
+    // Aktifkan dark mode jika sebelumnya sudah disimpan di localStorage
+    if (localStorage.getItem('theme') === 'dark') {
+        body.classList.add('dark-mode');
+    }
+
+    toggleModeBtn?.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        // Simpan preferensi
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+        } else {
+            localStorage.setItem('theme', 'light');
         }
+    });
+</script>
 
-        toggleModeBtn?.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            // Simpan preferensi
-            if (body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-            } else {
-                localStorage.setItem('theme', 'light');
-            }
-        });
-    </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

@@ -80,7 +80,8 @@ if (isset($_POST['submit'])) {
 
 <body>
     <?php include '../includes/sidebar.php'; ?>
-    <div class="main-content container mt-5">
+    <div class="content container">
+
         <h3>Input Absensi Manual</h3>
         <?php if (isset($pesan)): ?>
             <div class="alert alert-success"><?= $pesan ?></div>

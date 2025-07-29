@@ -125,7 +125,7 @@ $data = mysqli_query($koneksi, "
 
 <body>
     <?php include '../includes/sidebar.php'; ?>
-    <div class="main-content container mt-5">
+    <div class="content container">
         <h3>Verifikasi Pengajuan Izin/Sakit</h3>
         <table class="table table-bordered mt-3">
             <thead class="table-dark">

@@ -13,8 +13,10 @@ $totalSiswa = $data['total'] ?? 0;
 $query = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_pengguna WHERE role='admin'");
 $totalAdmin = mysqli_fetch_assoc($query)['total'] ?? 0;
 
-// Hadir
-$query = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_absensi WHERE tanggal = '$tanggal' AND keterangan = 'Hadir'");
+// Hadir// Hadir
+$query = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_absensi 
+    WHERE tanggal = '$tanggal' AND keterangan LIKE 'Hadir%'");
+
 $hadir = mysqli_fetch_assoc($query)['total'] ?? 0;
 
 // Izin
@@ -51,7 +53,42 @@ $grafik = [
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="../img/logo.png">
+    <style>
+        /* Form input dan select saat dark mode */
+        .dark-mode .form-control {
+            background-color: #2c2c2c;
+            color: #fff;
+            border: 1px solid #555;
+        }
 
+        /* Placeholder input di dark mode */
+        .dark-mode .form-control::placeholder {
+            color: #aaa;
+        }
+
+        /* Card dan isinya saat dark mode */
+        .dark-mode .card {
+            background-color: #1e1e1e;
+            color: #fff;
+            border: 1px solid #444;
+        }
+
+        .dark-mode .card-title {
+            color: #fff;
+        }
+
+        /* List-group saat dark mode */
+        .dark-mode .list-group-item {
+            background-color: #2c2c2c;
+            color: #fff;
+            border-color: #444;
+        }
+
+        /* Optional: chart background container */
+        .dark-mode canvas {
+            background-color: #1e1e1e;
+        }
+    </style>
 </head>
 
 <body>
@@ -82,12 +119,13 @@ $grafik = [
             foreach ($cards as [$label, $value, $color]) {
                 echo "
                 <div class='col-md-2'>
-                    <div class='card text-white bg-$color'>
-                        <div class='card-body text-center'>
-                            <h6 class='card-title mb-1'>$label</h6>
-                            <h4 class='fw-bold'>$value</h4>
-                        </div>
+                    <div class='card bg-$color'>
+                    <div class='card-body text-center text-white'>
+                        <h6 class='card-title mb-1'>$label</h6>
+                        <h4 class='fw-bold'>$value</h4>
                     </div>
+                </div>
+
                 </div>";
             }
             ?>

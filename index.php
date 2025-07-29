@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Absensi LPK</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sawarabi+Mincho&display=swap" rel="stylesheet">
@@ -13,16 +14,17 @@
             margin: 0;
             padding: 0;
             font-family: 'Sawarabi Mincho', serif;
-            background: #000000;
-            /* ← warna hitam */
+            background: #000;
             height: 100vh;
-            position: relative;
             overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-
         #particles-js {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
@@ -33,16 +35,14 @@
         .login-card {
             backdrop-filter: blur(12px);
             background: rgba(0, 0, 0, 0.5);
-            /* transparan hitam */
             border-radius: 20px;
             border: 1px solid #444;
             padding: 2rem;
             width: 100%;
             max-width: 360px;
             box-shadow: 0 12px 24px rgba(255, 255, 255, 0.05);
-            /* soft putih glow */
             z-index: 1;
-            margin: 20px;
+            position: relative;
         }
 
         .btn-primary {
@@ -59,14 +59,12 @@
         h4,
         p {
             color: #ffffff;
-            /* teks putih */
             font-weight: bold;
             text-shadow: none;
         }
 
         small.text-white-50 {
             color: #ffc0cb !important;
-            /* pink muda */
             text-shadow: none;
         }
 
@@ -81,7 +79,6 @@
             color: #ccc;
         }
 
-
         .logo-img {
             width: 80px;
             height: 80px;
@@ -89,10 +86,32 @@
             border: 2px solid #fff;
             margin-bottom: 10px;
         }
+
+        @media (max-width: 576px) {
+            .login-card {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .logo-img {
+                width: 60px;
+                height: 60px;
+            }
+
+            h4 {
+                font-size: 1.2rem;
+            }
+
+            p,
+            small {
+                font-size: 0.85rem;
+            }
+        }
     </style>
 </head>
 
-<body class="min-vh-100 d-flex flex-column justify-content-center align-items-center">
+<body>
+
     <div id="particles-js"></div>
 
     <?php session_start(); ?>
@@ -128,7 +147,6 @@
         </form>
     </div>
 
-    <!-- Particle.js Config -->
     <script>
         particlesJS("particles-js", {
             particles: {
@@ -137,13 +155,13 @@
                 shape: {
                     type: "image",
                     image: {
-                        src: "img/sakura.png", // pastikan file ada di folder img/
+                        src: "img/sakura.png",
                         width: 30,
                         height: 30
                     }
                 },
-                opacity: { value: 0.9 },      // lebih terang
-                size: { value: 14 },          // disesuaikan dengan gambar
+                opacity: { value: 0.9 },
+                size: { value: 14 },
                 line_linked: {
                     enable: true,
                     distance: 150,
@@ -182,3 +200,4 @@
 </body>
 
 </html>
+    

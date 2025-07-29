@@ -57,7 +57,8 @@ if (!empty($id_pengguna) && !empty($tgl_awal) && !empty($tgl_akhir)) {
 
 <body>
     <?php include '../includes/sidebar.php'; ?>
-    <div class="main-content container mt-5">
+    <div class="content container">
+
         <h3>Rekap Absensi Siswa</h3>
 
         <form method="GET" class="row g-3 mb-4">

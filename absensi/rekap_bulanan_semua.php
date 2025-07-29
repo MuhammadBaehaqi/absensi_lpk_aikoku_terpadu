@@ -101,7 +101,8 @@ $rekap = mysqli_query($koneksi, $sql);
 
 <body>
     <?php include '../includes/sidebar.php'; ?>
-    <div class="main-content container mt-5">
+    <div class="content container">
+
         <h3>Rekap Absensi Semua Siswa</h3>
 
         <form method="GET" class="row g-3 mb-4">

@@ -22,16 +22,25 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin</title>
+    <title><?= $judulHalaman ?></title>
+
+    <!-- Aktifkan dark mode sebelum halaman render -->
+    <script>
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark-mode');
+            document.body?.classList?.add('dark-mode');
+        }
+    </script>
+
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    
+
     <style>
         body {
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
 
         .sidebar {
@@ -45,6 +54,7 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
             transform: translateX(0);
             transition: transform 0.3s ease;
             z-index: 1030;
+            padding-top: 60px;
         }
 
         @media (max-width: 991.98px) {
@@ -54,6 +64,14 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
 
             .sidebar.show {
                 transform: translateX(0);
+            }
+
+            .topbar {
+                left: 0 !important;
+            }
+
+            .content {
+                margin-left: 0 !important;
             }
 
             .overlay {
@@ -85,19 +103,21 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
             margin-bottom: 0.25rem;
             letter-spacing: 0.5px;
         }
-.nav-link {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-weight: normal;
-}
 
-.nav-link.active {
-    background-color: rgba(255, 255, 255, 0.1);
-    font-weight: 600; /* jangan bold penuh */
-    border-radius: 5px;
-}
+        .nav-link {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: normal;
+        }
 
+        /* Aktif link di sidebar pada dark mode */
+        .dark-mode .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            font-weight: 600;
+            border-radius: 5px;
+        }
 
         .topbar {
             position: fixed;
@@ -105,80 +125,14 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
             left: 250px;
             right: 0;
             height: 60px;
-            background-color: #343a40;
+            background-color: #212529;
             color: white;
             z-index: 1040;
             padding: 0 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .main-content {
-            margin-left: 250px;
-            padding: 70px 20px 20px;
-        }
-
-        @media (max-width: 991.98px) {
-            .main-content {
-                margin-left: 0;
-            }
-        }
-
-        body {
-            overflow-x: hidden;
-        }
-
-        .sidebar {
-            height: 100vh;
-            width: 250px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            transform: translateX(0);
-            transition: transform 0.3s ease-in-out;
-            z-index: 1050;
-            padding-top: 60px;
-        }
-
-        .sidebar a {
-            padding: 12px 20px;
-            display: block;
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .sidebar a:hover,
-        .sidebar a.active {
-            background-color: #495057;
-        }
-
-        .sidebar-header {
-            background-color: #212529;
-        }
-
-        .sidebar.hidden {
-            transform: translateX(-100%);
-        }
-
-        .topbar {
-            position: fixed;
-            top: 0;
-            left: 250px;
-            right: 0;
-            height: 60px;
-            background-color: #212529;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 1000;
             transition: left 0.3s ease-in-out;
-        }
-
-        .topbar.sidebar-hidden {
-            left: 0;
         }
 
         .content {
@@ -187,29 +141,120 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
             transition: margin-left 0.3s ease-in-out;
         }
 
-        .content.sidebar-hidden {
-            margin-left: 0;
-        }
-
-        /* Dark mode */
+        /* Dark Mode Fixes */
         .dark-mode {
             background-color: #121212;
             color: white;
         }
 
-        .dark-mode .card {
-            background-color: #1f1f1f;
-            color: white;
-        }
-
+        /* Dark mode: samakan warna topbar & sidebar */
+        .dark-mode .topbar,
         .dark-mode .sidebar {
-            background-color: #1a1a1a;
+            background-color: #000 !important;
+            color: #fff;
         }
 
-        .dark-mode .topbar {
-            background-color: #000;
+        .dark-mode .bg-primary {
+            background-color: #0d6efd !important;
+            color: #fff !important;
         }
-        
+
+        .dark-mode .bg-success {
+            background-color: #198754 !important;
+            color: #fff !important;
+        }
+
+        .dark-mode .bg-warning {
+            background-color: #ffc107 !important;
+            color: #000 !important;
+        }
+
+        .dark-mode .bg-info {
+            background-color: #0dcaf0 !important;
+            color: #000 !important;
+        }
+
+        .dark-mode .bg-danger {
+            background-color: #dc3545 !important;
+            color: #fff !important;
+        }
+
+        .dark-mode .bg-secondary {
+            background-color: #6c757d !important;
+            color: #fff !important;
+        }
+
+        .dark-mode .bg-dark {
+            background-color: #212529 !important;
+            color: #fff !important;
+        }
+
+        /* Fallback background jika card kosong */
+        .card {
+            background-color: white;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        /* ====== Sidebar: warna dasar link (menimpa .text-white Bootstrap) ====== */
+        .sidebar .nav-link.text-white {
+            color: #e9ecef !important;
+            /* mode terang: abu muda */
+        }
+
+        .dark-mode .sidebar .nav-link.text-white {
+            color: #f1f3f5 !important;
+            /* mode gelap: sedikit lebih terang */
+        }
+
+        /* Hover & fokus (aksesibilitas) */
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link:focus-visible {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #fff !important;
+            outline: none;
+        }
+
+        /* ====== AKTIF (mode terang / default) ====== */
+        /* Sidebar kamu di mode terang pakai bg #212529 (gelap), jadi aktif dibuat kontras */
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: #fff !important;
+            font-weight: 600;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .sidebar .nav-link.active::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 3px;
+            background: #0d6efd;
+            /* indikator biru Bootstrap */
+            border-radius: 3px;
+        }
+
+        /* ====== AKTIF (mode gelap) ====== */
+        .dark-mode .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.18);
+            color: #fff !important;
+        }
+
+        .dark-mode .sidebar .nav-link.active::before {
+            background: #0d6efd;
+        }
+
+        /* Opsional: ikon sedikit lebih jelas saat aktif */
+        .sidebar .nav-link i {
+            opacity: .85;
+            transition: opacity .2s ease;
+        }
+
+        .sidebar .nav-link.active i {
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -220,14 +265,15 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
 
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar text-white p-3">
-    <div class="d-flex align-items-center mb-3">
-        <img src="../img/logo.png" alt="Logo" class="sidebar-logo rounded-circle">
-        <div class="sidebar-brand">LPK AIKOKU TERPADU</div>
-    </div>
+        <div class="d-flex align-items-center mb-3">
+            <img src="../img/logo.png" alt="Logo" class="sidebar-logo rounded-circle">
+            <div class="sidebar-brand">LPK AIKOKU TERPADU</div>
+        </div>
 
-    <ul class="nav flex-column">
-        <li class="nav-item mb-2">
-            <a href="../admin/dashboard_admin.php" class="nav-link text-white <?= $current === 'dashboard_admin.php' ? 'active' : '' ?>">
+        <ul class="nav flex-column">
+            <li class="nav-item mb-2">
+                <a href="../admin/dashboard_admin.php"
+                    class="nav-link text-white <?= $current === 'dashboard_admin.php' ? 'active' : '' ?>">
                     <i class="bi bi-speedometer2 me-2"></i>Dashboard
                 </a>
             </li>
@@ -241,6 +287,12 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
                 <a href="../absensi/input_manual.php"
                     class="nav-link text-white <?= $current === 'input_manual.php' ? 'active' : '' ?>">
                     <i class="bi bi-pencil-square me-2"></i>Input Absensi Manual
+                </a>
+            </li>
+            <li class="nav-item mb-2">
+                <a href="../admin/verifikasi_koreksi.php"
+                    class="nav-link text-white <?= $current === 'verifikasi_koreksi.php' ? 'active' : '' ?>">
+                    <i class="bi bi-shield-check me-2"></i>Verifikasi Koreksi Absensi
                 </a>
             </li>
             <li class="nav-item mb-2">
@@ -264,7 +316,7 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
             <li class="nav-item mb-2">
                 <a href="../absensi/rekap_bulanan_semua.php"
                     class="nav-link text-white <?= $current === 'rekap_bulanan_semua.php' ? 'active' : '' ?>">
-                    <i class="bi bi-bar-chart-line me-2"></i>Rekap Semua Siswa Bulanan
+                    <i class="bi bi-bar-chart-line me-2"></i>Rekap Semua Siswa<br><span class="ms-4">Bulanan</span>
                 </a>
             </li>
             <li class="nav-item mb-2">
@@ -288,17 +340,18 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
     </div>
 
     <!-- Topbar -->
-<div class="topbar">
-    <button id="openSidebar" class="btn btn-outline-light btn-sm d-lg-none"><i class="bi bi-list"></i></button>
-    <strong><?= $judulHalaman ?></strong>
+    <div class="topbar">
+        <button id="openSidebar" class="btn btn-outline-light btn-sm d-lg-none"><i class="bi bi-list"></i></button>
+        <strong><?= $judulHalaman ?></strong>
         <div class="d-flex align-items-center gap-3">
             <span><i class="bi bi-person-circle"></i> <?= $_SESSION['username']; ?> (<?= $_SESSION['role']; ?>)</span>
             <button id="toggleMode" class="btn btn-outline-light btn-sm">🌙</button>
         </div>
     </div>
 
-    <!-- JS -->
+    <!-- Sidebar Script -->
     <script>
+        // Sidebar dan dark mode toggle
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         const openBtn = document.getElementById('openSidebar');
@@ -313,7 +366,6 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
             overlay.style.display = 'none';
         });
 
-        // Tutup sidebar setelah klik link (di layar kecil)
         document.querySelectorAll('#sidebar .nav-link').forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth < 992) {
@@ -323,32 +375,24 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
             });
         });
 
-        // Highlight link aktif
-        document.querySelectorAll('#sidebar .nav-link').forEach(link => {
-            if (link.href === window.location.href) {
-                link.classList.add('active');
+        // Dark mode toggle
+        const toggleModeBtn = document.getElementById('toggleMode');
+        toggleModeBtn?.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark-mode');
+            document.body?.classList?.toggle('dark-mode');
+            const mode = document.documentElement.classList.contains('dark-mode') ? 'dark' : 'light';
+            localStorage.setItem('theme', mode);
+        });
+
+        // Fallback: aktifkan ulang dark mode kalau belum ke-set di body
+        document.addEventListener('DOMContentLoaded', () => {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+                document.body?.classList?.add('dark-mode');
             }
         });
     </script>
-    <script>
-    const toggleModeBtn = document.getElementById('toggleMode');
-    const body = document.body;
-
-    // Aktifkan dark mode jika sebelumnya sudah disimpan di localStorage
-    if (localStorage.getItem('theme') === 'dark') {
-        body.classList.add('dark-mode');
-    }
-
-    toggleModeBtn?.addEventListener('click', () => {
-        body.classList.toggle('dark-mode');
-        // Simpan preferensi
-        if (body.classList.contains('dark-mode')) {
-            localStorage.setItem('theme', 'dark');
-        } else {
-            localStorage.setItem('theme', 'light');
-        }
-    });
-</script>
 
 
     <!-- Bootstrap JS -->

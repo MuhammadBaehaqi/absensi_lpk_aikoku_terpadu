@@ -46,6 +46,45 @@ if ($hour < 11) {
             </div>
         </div>
     </nav>
+    <?php
+    $tanggal = date('Y-m-d');
+    $id_pengguna = $_SESSION['id_pengguna'];
+
+    $cek = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id_pengguna' AND tanggal='$tanggal'");
+    $absen = mysqli_fetch_assoc($cek);
+
+    $badge = '';
+    if (!$absen) {
+        $badge = '<span class="badge bg-secondary">Belum Absen</span>';
+    } elseif ($absen['keterangan'] == 'Alpha') {
+        // Cek apakah ada koreksi
+        $koreksi = mysqli_query($koneksi, "SELECT * FROM tb_koreksi_absen WHERE id_pengguna='$id_pengguna' AND tanggal='$tanggal'");
+        if (mysqli_num_rows($koreksi) > 0) {
+            $row = mysqli_fetch_assoc($koreksi);
+            if ($row['status'] == 'Menunggu') {
+                $badge = '<span class="badge bg-warning text-dark">Menunggu Koreksi ⚠️</span>';
+            } elseif ($row['status'] == 'Disetujui') {
+                $badge = '<span class="badge bg-info text-dark">Koreksi Diterima 📝</span>';
+            } else {
+                $badge = '<span class="badge bg-danger">Alpha ❌</span>';
+            }
+        } else {
+            $badge = '<span class="badge bg-danger">Alpha ❌</span>';
+        }
+    } elseif (!empty($absen['jam_masuk'])) {
+        $jamMasuk = strtotime($absen['jam_masuk']);
+        $batas = strtotime('09:00:00');
+        if ($jamMasuk > $batas) {
+            $badge = '<span class="badge bg-warning text-dark">Terlambat ⏰</span>';
+        } else {
+            $badge = '<span class="badge bg-success">Hadir ✅</span>';
+        }
+    }
+    ?>
+
+    <div class="mt-3 text-center">
+        Status Kehadiran Hari Ini: <?= $badge ?>
+    </div>
 
     <div class="container mt-5">
         <div class="text-center mb-4">

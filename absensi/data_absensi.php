@@ -113,9 +113,8 @@ $total_pages = ceil($total_data / $limit);
 
 <body>
     <?php include '../includes/sidebar.php'; ?>
-    <div class="main-content container mt-5">
+    <div class="content container">
         <h3>Data Absensi Siswa (Filter)</h3>
-
         <!-- Filter Form -->
         <form method="GET" class="row g-3 mb-4">
             <div class="col-md-3">
@@ -162,7 +161,7 @@ $total_pages = ceil($total_data / $limit);
                     <th>Tanggal</th>
                     <th>Jam Masuk</th>
                     <th>Jam Pulang</th>
-                    <th>Keterangan</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -175,7 +174,41 @@ $total_pages = ceil($total_data / $limit);
                         <td><?= date('d-m-Y', strtotime($row['tanggal'])) ?></td>
                         <td><?= $row['jam_masuk'] ?? '-' ?></td>
                         <td><?= $row['jam_pulang'] ?? '-' ?></td>
-                        <td><?= $row['keterangan'] ?></td>
+                        <td>
+                            <?php
+                                if ($row['keterangan'] == 'Alpha') {
+                                    // Cek koreksi
+                                    $cekKoreksi = mysqli_query($koneksi, "
+            SELECT status FROM tb_koreksi_absen 
+            WHERE id_pengguna='{$row['id_pengguna']}' 
+            AND tanggal='{$row['tanggal']}' 
+            ORDER BY id_koreksi DESC LIMIT 1");
+
+                                    if (mysqli_num_rows($cekKoreksi) > 0) {
+                                        $kor = mysqli_fetch_assoc($cekKoreksi);
+                                        if ($kor['status'] == 'Menunggu') {
+                                            echo '<span class="badge bg-warning text-dark">Menunggu Koreksi ⚠️</span>';
+                                        } elseif ($kor['status'] == 'Disetujui') {
+                                            echo '<span class="badge bg-info text-dark">Koreksi Diterima 📝</span>';
+                                        } else {
+                                            echo '<span class="badge bg-danger">Alpha ❌</span>';
+                                        }
+                                    } else {
+                                        echo '<span class="badge bg-danger">Alpha ❌</span>';
+                                    }
+                                } elseif (!empty($row['jam_masuk'])) {
+                                    $jamMasuk = strtotime($row['jam_masuk']);
+                                    $batas = strtotime('09:00:00');
+                                    if ($jamMasuk > $batas) {
+                                        echo '<span class="badge bg-warning text-dark">Terlambat ⏰</span>';
+                                    } else {
+                                        echo '<span class="badge bg-success">Hadir ✅</span>';
+                                    }
+                                } else {
+                                    echo '<span class="badge bg-secondary">Belum Absen</span>';
+                                }
+                                ?>
+                        </td>
                     </tr>
                 <?php endwhile; ?>
             </tbody>

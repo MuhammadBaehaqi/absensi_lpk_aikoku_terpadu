@@ -20,14 +20,21 @@ if (isset($_POST['submit'])) {
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = $_POST['role'];
 
-    $cek = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE username='$username' OR email='$email'");
-    if (mysqli_num_rows($cek) > 0) {
-        $_SESSION['toast'] = ['message' => 'Username / Email sudah digunakan.', 'type' => 'danger'];
+    $cek_username = mysqli_query($koneksi, "SELECT 1 FROM tb_pengguna WHERE username='$username'");
+    $cek_email = mysqli_query($koneksi, "SELECT 1 FROM tb_pengguna WHERE email='$email'");
+
+    if (mysqli_num_rows($cek_username) > 0) {
+        $_SESSION['toast'] = ['message' => 'Username sudah digunakan.', 'type' => 'danger'];
+    } elseif (mysqli_num_rows($cek_email) > 0) {
+        $_SESSION['toast'] = ['message' => 'Email sudah digunakan.', 'type' => 'danger'];
     } else {
-        mysqli_query($koneksi, "INSERT INTO tb_pengguna (nama_lengkap, username, email, password, role)
-                                VALUES ('$nama', '$username', '$email', '$password', '$role')");
+        // Nama boleh sama, jadi tidak perlu dicek
+        mysqli_query($koneksi, "INSERT INTO tb_pengguna (nama_lengkap, username, email, password, role, tanggal_dibuat)
+VALUES ('$nama', '$username', '$email', '$password', '$role', NOW())");
+
         $_SESSION['toast'] = ['message' => 'Pengguna berhasil ditambahkan!', 'type' => 'success'];
     }
+
     header("Location: kelola_user.php");
     exit;
 }
@@ -35,11 +42,13 @@ if (isset($_POST['submit'])) {
 // Ambil data admin dan siswa
 $total_admin = mysqli_fetch_row(mysqli_query($koneksi, "SELECT COUNT(*) FROM tb_pengguna WHERE role='admin'"))[0];
 $total_pages_admin = ceil($total_admin / $limit);
-$data_admin = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='admin' ORDER BY nama_lengkap ASC LIMIT $limit OFFSET $offset_admin");
+$data_admin = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='admin' ORDER BY id_pengguna ASC
+ LIMIT $limit OFFSET $offset_admin");
 
 $total_siswa = mysqli_fetch_row(mysqli_query($koneksi, "SELECT COUNT(*) FROM tb_pengguna WHERE role='siswa'"))[0];
 $total_pages_siswa = ceil($total_siswa / $limit);
-$data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='siswa' ORDER BY nama_lengkap ASC LIMIT $limit OFFSET $offset_siswa");
+$data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='siswa' ORDER BY id_pengguna ASC
+ LIMIT $limit OFFSET $offset_siswa");
 ?>
 <!DOCTYPE html>
 <html>
@@ -124,6 +133,7 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
         .dark-mode .table tbody tr:hover {
             background-color: #2a2a2a;
         }
+        
     </style>
     <link rel="icon" type="image/png" href="../img/logo.png">
 </head>
@@ -188,6 +198,7 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                     <th>Username</th>
                     <th>Email</th>
                     <th>Role</th>
+                    <th>Tanggal Buat Akun</th>
                 </tr>
             </thead>
             <tbody>
@@ -199,6 +210,7 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                         <td><?= htmlspecialchars($row['username']) ?></td>
                         <td><?= htmlspecialchars($row['email']) ?></td>
                         <td><?= htmlspecialchars($row['role']) ?></td>
+                        <td><?= date('d-m-Y H:i', strtotime($row['tanggal_dibuat'])) ?></td>
                     </tr>
                 <?php endwhile; ?>
             </tbody>
@@ -225,6 +237,7 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                     <th>Username</th>
                     <th>Email</th>
                     <th>Role</th>
+                    <th>Tanggal Buat Akun</th>
                 </tr>
             </thead>
             <tbody>
@@ -236,6 +249,7 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                         <td><?= htmlspecialchars($row['username']) ?></td>
                         <td><?= htmlspecialchars($row['email']) ?></td>
                         <td><?= htmlspecialchars($row['role']) ?></td>
+                        <td><?= date('d-m-Y H:i', strtotime($row['tanggal_dibuat'])) ?></td>
                     </tr>
                 <?php endwhile; ?>
             </tbody>

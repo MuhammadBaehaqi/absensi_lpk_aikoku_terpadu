@@ -6,23 +6,52 @@ $id_pengguna = $_SESSION['id_pengguna'];
 $tanggal = date('Y-m-d');
 $jam = date('H:i:s');
 
-// Cek apakah sudah absen masuk hari ini
 $cek = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id_pengguna' AND tanggal='$tanggal'");
 $data = mysqli_fetch_assoc($cek);
 
 if ($data) {
-    if ($data['jam_pulang'] == null) {
-        // Update jam pulang
-        mysqli_query($koneksi, "UPDATE tb_absensi 
-                                SET jam_pulang = '$jam' 
-                                WHERE id_absen = '{$data['id_absen']}'");
+    if (empty($data['jam_masuk'])) {
+        // Belum absen masuk sama sekali
+        $pesan = "Kamu belum absen masuk hari ini. Tidak bisa absen pulang.";
+    } elseif ($data['keterangan'] == 'Alpha') {
+        // Masih Alpha, cek apakah koreksi sudah disetujui
+        $cekKoreksi = mysqli_query($koneksi, "SELECT * FROM tb_koreksi_absen 
+            WHERE id_pengguna='$id_pengguna' 
+            AND tanggal='$tanggal' 
+            ORDER BY id_koreksi DESC LIMIT 1");
+
+        if (mysqli_num_rows($cekKoreksi) > 0) {
+            $koreksi = mysqli_fetch_assoc($cekKoreksi);
+            if ($koreksi['status'] == 'Menunggu') {
+                $pesan = "Kamu sudah mengajukan koreksi. Tunggu verifikasi admin sebelum bisa absen pulang.";
+            } elseif ($koreksi['status'] == 'Disetujui') {
+                // Admin sudah setujui, boleh lanjut
+                if (empty($data['jam_pulang'])) {
+                    mysqli_query($koneksi, "UPDATE tb_absensi SET jam_pulang='$jam' WHERE id_absen='{$data['id_absen']}'");
+                    $pesan = "Absen pulang berhasil!";
+                } else {
+                    $pesan = "Kamu sudah absen pulang hari ini!";
+                }
+            } else {
+                // Koreksi ditolak
+                $pesan = "Koreksi ditolak. Kamu dianggap Alpha dan tidak bisa absen pulang.";
+            }
+        } else {
+            // Tidak ada koreksi sama sekali
+            $pesan = "Kamu belum absen masuk hari ini. Tidak bisa absen pulang.";
+        }
+    } elseif (empty($data['jam_pulang'])) {
+        // Normal: sudah masuk, belum pulang
+        mysqli_query($koneksi, "UPDATE tb_absensi SET jam_pulang='$jam' WHERE id_absen='{$data['id_absen']}'");
         $pesan = "Absen pulang berhasil!";
     } else {
         $pesan = "Kamu sudah absen pulang hari ini!";
     }
 } else {
-    $pesan = "Kamu belum absen masuk hari ini!";
+    $pesan = "Kamu belum absen masuk hari ini.";
 }
+
+echo "<script>alert('$pesan'); window.location.href='../dashboard_siswa.php';</script>";
 ?>
 
 <!DOCTYPE html>

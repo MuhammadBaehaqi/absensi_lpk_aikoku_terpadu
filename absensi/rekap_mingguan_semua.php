@@ -127,7 +127,8 @@ if (!empty($tgl_awal) && !empty($tgl_akhir)) {
 
 <body>
     <?php include '../includes/sidebar.php'; ?>
-    <div class="main-content container mt-5">
+    <div class="content px-4">
+
         <h3>Rekap Absensi Mingguan Semua Siswa</h3>
     
         <form method="GET" class="row g-3 mb-4">

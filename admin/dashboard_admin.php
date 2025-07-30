@@ -2,46 +2,66 @@
 include '../includes/config.php';
 include '../includes/session.php';
 
-// ====== Ambil Data Statistik Absensi Hari Ini ======
 $tanggal = date('Y-m-d');
+$bulan = date('m');
+$tahun = date('Y');
 
-// Total siswa
-$query = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_pengguna WHERE role='siswa'");
-$data = mysqli_fetch_assoc($query);
-$totalSiswa = $data['total'] ?? 0;
-// Total admin
-$query = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_pengguna WHERE role='admin'");
-$totalAdmin = mysqli_fetch_assoc($query)['total'] ?? 0;
+// Total pengguna
+$totalSiswa = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_pengguna WHERE role='siswa'"))['total'] ?? 0;
+$totalAdmin = mysqli_fetch_assoc(mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_pengguna WHERE role='admin'"))['total'] ?? 0;
 
-// Hadir// Hadir
-$query = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_absensi 
-    WHERE tanggal = '$tanggal' AND keterangan LIKE 'Hadir%'");
-
-$hadir = mysqli_fetch_assoc($query)['total'] ?? 0;
+// Hadir (termasuk: Hadir, Terlambat, Hadir (Lupa Absen))
+$hadirQuery = mysqli_query($koneksi, "
+    SELECT COUNT(*) AS total FROM tb_absensi 
+    WHERE tanggal = '$tanggal' AND (
+        keterangan LIKE 'Hadir%' OR 
+        keterangan = 'Terlambat'
+    )
+");
+$hadir = mysqli_fetch_assoc($hadirQuery)['total'] ?? 0;
 
 // Izin
-$query = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_absensi WHERE tanggal = '$tanggal' AND keterangan = 'Izin'");
-$izin = mysqli_fetch_assoc($query)['total'] ?? 0;
+$izin = mysqli_fetch_assoc(mysqli_query($koneksi, "
+    SELECT COUNT(*) AS total FROM tb_absensi 
+    WHERE tanggal = '$tanggal' AND keterangan = 'Izin'
+"))['total'] ?? 0;
 
 // Sakit
-$query = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_absensi WHERE tanggal = '$tanggal' AND keterangan = 'Sakit'");
-$sakit = mysqli_fetch_assoc($query)['total'] ?? 0;
+$sakit = mysqli_fetch_assoc(mysqli_query($koneksi, "
+    SELECT COUNT(*) AS total FROM tb_absensi 
+    WHERE tanggal = '$tanggal' AND keterangan = 'Sakit'
+"))['total'] ?? 0;
 
 // Alpha
-$query = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_absensi WHERE tanggal = '$tanggal' AND keterangan = 'Alpha'");
-$alpha = mysqli_fetch_assoc($query)['total'] ?? 0;
+$alpha = mysqli_fetch_assoc(mysqli_query($koneksi, "
+    SELECT COUNT(*) AS total FROM tb_absensi 
+    WHERE tanggal = '$tanggal' AND keterangan = 'Alpha'
+"))['total'] ?? 0;
 
-// Belum Absen = Total siswa - yang sudah absen
+// Belum Absen
 $belumAbsen = $totalSiswa - ($hadir + $izin + $sakit + $alpha);
 
-// ====== Dummy Data Grafik Bulanan (sementara) ======
+// Grafik Bulanan Dinamis
+function getTotalByKeterangan($koneksi, $keterangan, $bulan, $tahun)
+{
+    $result = mysqli_fetch_assoc(mysqli_query($koneksi, "
+        SELECT COUNT(*) AS total FROM tb_absensi 
+        WHERE keterangan LIKE '$keterangan%' 
+        AND MONTH(tanggal) = '$bulan' AND YEAR(tanggal) = '$tahun'
+    "));
+    return $result['total'] ?? 0;
+}
+
 $grafik = [
-    'Hadir' => 20,
-    'Izin' => 2,
-    'Sakit' => 1,
-    'Alpha' => 3
+    'Hadir' => getTotalByKeterangan($koneksi, 'Hadir', $bulan, $tahun) +
+        getTotalByKeterangan($koneksi, 'Terlambat', $bulan, $tahun) +
+        getTotalByKeterangan($koneksi, 'Hadir (Lupa Absen)', $bulan, $tahun),
+    'Izin' => getTotalByKeterangan($koneksi, 'Izin', $bulan, $tahun),
+    'Sakit' => getTotalByKeterangan($koneksi, 'Sakit', $bulan, $tahun),
+    'Alpha' => getTotalByKeterangan($koneksi, 'Alpha', $bulan, $tahun)
 ];
 ?>
+
 
 <!DOCTYPE html>
 <html lang="id">
@@ -96,6 +116,9 @@ $grafik = [
 
     <div class="content" id="mainContent">
         <h4>📊 Statistik Absensi Hari Ini (<?= date('d-m-Y') ?>)</h4>
+        <a href="cron_alpha.php" class="btn btn-outline-danger btn-sm mb-3">
+            🔄 Jalankan Auto-Alpha Sekarang
+        </a>
         <div class="row g-3 mb-4 mt-2">
             <?php
             $cards = [

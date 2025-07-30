@@ -20,17 +20,23 @@ if (isset($_POST['submit'])) {
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = $_POST['role'];
 
-    $cek_username = mysqli_query($koneksi, "SELECT 1 FROM tb_pengguna WHERE username='$username'");
-    $cek_email = mysqli_query($koneksi, "SELECT 1 FROM tb_pengguna WHERE email='$email'");
-
-    if (mysqli_num_rows($cek_username) > 0) {
+    // Validasi bahwa username ≠ email
+    if (strtolower($username) === strtolower($email)) {
+        $_SESSION['toast'] = ['message' => 'Username dan Email tidak boleh sama.', 'type' => 'danger'];
+    }
+    // Cek username sudah dipakai
+    elseif (mysqli_num_rows(mysqli_query($koneksi, "SELECT 1 FROM tb_pengguna WHERE username='$username'")) > 0) {
         $_SESSION['toast'] = ['message' => 'Username sudah digunakan.', 'type' => 'danger'];
-    } elseif (mysqli_num_rows($cek_email) > 0) {
+    }
+    // Cek email sudah dipakai
+    elseif (mysqli_num_rows(mysqli_query($koneksi, "SELECT 1 FROM tb_pengguna WHERE email='$email'")) > 0) {
         $_SESSION['toast'] = ['message' => 'Email sudah digunakan.', 'type' => 'danger'];
     } else {
-        // Nama boleh sama, jadi tidak perlu dicek
-        mysqli_query($koneksi, "INSERT INTO tb_pengguna (nama_lengkap, username, email, password, role, tanggal_dibuat)
-VALUES ('$nama', '$username', '$email', '$password', '$role', NOW())");
+        // Nama boleh sama, langsung simpan
+        mysqli_query($koneksi, "INSERT INTO tb_pengguna 
+            (nama_lengkap, username, email, password, role, tanggal_dibuat)
+            VALUES 
+            ('$nama', '$username', '$email', '$password', '$role', NOW())");
 
         $_SESSION['toast'] = ['message' => 'Pengguna berhasil ditambahkan!', 'type' => 'success'];
     }
@@ -133,7 +139,47 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
         .dark-mode .table tbody tr:hover {
             background-color: #2a2a2a;
         }
-        
+
+    
+        /* Warna latar dan teks card dalam mode gelap */
+        .dark-mode .card {
+            background-color: #1f1f1f;
+            color: #f1f1f1;
+        }
+
+        /* Warna header card */
+        .dark-mode .card-header {
+            background-color: #2c2f33 !important;
+            color: #fff !important;
+        }
+
+        /* Warna isi body card */
+        .dark-mode .card-body {
+            background-color: #1f1f1f;
+            color: #f1f1f1;
+            border-color: #444;
+        }
+
+        /* Tambahan hover dan border */
+        .dark-mode .card,
+        .dark-mode .card-body,
+        .dark-mode .card-header {
+            border-color: #444;
+        }
+        .table-responsive {
+            overflow-x: scroll !important;
+            scrollbar-width: auto; /* Firefox */
+        }
+
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+            background-color: #ccc; /* warna track */
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background-color: #888; /* warna thumb */
+            border-radius: 4px;
+        }
     </style>
     <link rel="icon" type="image/png" href="../img/logo.png">
 </head>
@@ -153,7 +199,19 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
         <?php unset($_SESSION['toast']); endif; ?>
 
     <div class="container">
-        <h3>Tambah Pengguna Baru</h3>
+    <h3>Tambah Pengguna Baru</h3>
+
+    <div class="alert alert-info" role="alert">
+        <strong>Catatan:</strong>
+        <ul class="mb-0 ps-3">
+            <li>Username dan email <strong>tidak boleh sama</strong>.</li>
+            <li>Pastikan username dan email <strong>belum digunakan oleh pengguna lain</strong>.</li>
+            <li><strong>Username digunakan untuk login</strong>, harap mudah diingat.</li>
+            <li>Email harus aktif dan valid untuk keperluan verifikasi atau komunikasi.</li>
+            <li>Role menentukan akses pengguna: <em>admin</em> atau <em>siswa</em>.</li>
+        </ul>
+    </div>
+
         <form method="post" class="row g-3">
             <div class="col-md-6"><label>Nama Lengkap</label><input type="text" name="nama" class="form-control"
                     required></div>
@@ -179,55 +237,139 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
     </div>
 
     <hr class="my-5">
-    <h3>Daftar Admin</h3>
-    <form method="get" class="mb-2">
-        <label>Tampilkan:</label>
-        <select name="limit" onchange="this.form.submit()" class="form-select d-inline-block w-auto ms-2">
-            <?php foreach ([5, 10, 15, 20] as $opt): ?>
-                <option value="<?= $opt ?>" <?= ($limit == $opt ? 'selected' : '') ?>><?= $opt ?></option>
-            <?php endforeach; ?>
-        </select>
-        <input type="hidden" name="page_siswa" value="<?= $page_siswa ?>">
-    </form>
-    <div class="table-responsive mb-4">
-        <table class="table table-bordered table-striped">
-            <thead class="table-primary">
-                <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Tanggal Buat Akun</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php $no = $offset_admin + 1;
-                while ($row = mysqli_fetch_assoc($data_admin)): ?>
+
+<div class="card border-primary shadow mb-4">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Daftar Admin</h5>
+    </div>
+    <div class="card-body">
+
+        <form method="get" class="mb-3">
+            <label class="fw-semibold">Tampilkan:</label>
+            <select name="limit" onchange="this.form.submit()" class="form-select d-inline-block w-auto ms-2">
+                <?php foreach ([5, 10, 15, 20] as $opt): ?>
+                    <option value="<?= $opt ?>" <?= ($limit == $opt ? 'selected' : '') ?>><?= $opt ?></option>
+                <?php endforeach; ?>
+            </select>
+            <input type="hidden" name="page_siswa" value="<?= $page_siswa ?>">
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-primary">
                     <tr>
-                        <td><?= $no++ ?></td>
-                        <td><?= htmlspecialchars($row['nama_lengkap']) ?></td>
-                        <td><?= htmlspecialchars($row['username']) ?></td>
-                        <td><?= htmlspecialchars($row['email']) ?></td>
-                        <td><?= htmlspecialchars($row['role']) ?></td>
-                        <td><?= date('d-m-Y H:i', strtotime($row['tanggal_dibuat'])) ?></td>
+                        <th>No</th>
+                        <th>Nama</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Tanggal Buat Akun</th>
+                        <th>Aksi</th>
                     </tr>
+                </thead>
+                <tbody>
+                    <?php $no = $offset_admin + 1;
+                    while ($row = mysqli_fetch_assoc($data_admin)): ?>
+                        <tr>
+                            <td><?= $no++ ?></td>
+                            <td><?= htmlspecialchars($row['nama_lengkap']) ?></td>
+                            <td><?= htmlspecialchars($row['username']) ?></td>
+                            <td><?= htmlspecialchars($row['email']) ?></td>
+                            <td><?= htmlspecialchars($row['role']) ?></td>
+                            <td><?= date('d-m-Y H:i', strtotime($row['tanggal_dibuat'])) ?></td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                    data-bs-target="#editModal<?= $row['id_pengguna'] ?>">Edit</button>
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal<?= $row['id_pengguna'] ?>">Hapus</button>
+                            </td>
+                        </tr>
+                    <!-- Modal Edit -->
+                    <div class="modal fade" id="editModal<?= $row['id_pengguna'] ?>" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form method="post" action="proses_edit_user.php">
+                                <input type="hidden" name="id_pengguna" value="<?= $row['id_pengguna'] ?>">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Edit Pengguna</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-2">
+                                            <label>Nama Lengkap</label>
+                                            <input type="text" name="nama" class="form-control" value="<?= $row['nama_lengkap'] ?>"
+                                                required>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>Username</label>
+                                            <input type="text" name="username" class="form-control" value="<?= $row['username'] ?>"
+                                                required>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>Email</label>
+                                            <input type="email" name="email" class="form-control" value="<?= $row['email'] ?>" required>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>Role</label>
+                                            <select name="role" class="form-select" required>
+                                                <option value="admin" <?= $row['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
+                                                <option value="siswa" <?= $row['role'] == 'siswa' ? 'selected' : '' ?>>Siswa</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-success" type="submit" name="edit_user">Simpan Perubahan</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                
+                    <!-- Modal Hapus -->
+                    <div class="modal fade" id="deleteModal<?= $row['id_pengguna'] ?>" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form method="post" action="proses_hapus_user.php">
+                                <input type="hidden" name="id_pengguna" value="<?= $row['id_pengguna'] ?>">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title">Hapus Pengguna</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Yakin ingin menghapus <strong><?= $row['nama_lengkap'] ?></strong>?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-danger" type="submit" name="hapus_user">Hapus</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 <?php endwhile; ?>
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+             <!-- Pagination -->
         <nav>
             <ul class="pagination">
                 <?php for ($i = 1; $i <= $total_pages_admin; $i++): ?>
-                    <li class="page-item <?= ($i == $page_admin) ? 'active' : '' ?>">
-                        <a class="page-link"
-                            href="?page_admin=<?= $i ?>&page_siswa=<?= $page_siswa ?>&limit=<?= $limit ?>"><?= $i ?></a>
-                    </li>
-                <?php endfor; ?>
-            </ul>
-        </nav>
+                        <li class="page-item <?= ($i == $page_admin) ? 'active' : '' ?>">
+                            <a class="page-link"
+                                href="?page_admin=<?= $i ?>&page_siswa=<?= $page_siswa ?>&limit=<?= $limit ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+                </ul>
+            </nav>
+        </div>       
     </div>
+</div>
 
-    <h3>Daftar Siswa</h3>
+<div class="card border-success shadow mb-4">
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">Daftar Siswa</h5>
+    </div>
+    <div class="card-body">
     <div class="table-responsive">
         <table class="table table-bordered table-striped">
             <thead class="table-success">
@@ -238,6 +380,7 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                     <th>Email</th>
                     <th>Role</th>
                     <th>Tanggal Buat Akun</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
@@ -250,7 +393,80 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                         <td><?= htmlspecialchars($row['email']) ?></td>
                         <td><?= htmlspecialchars($row['role']) ?></td>
                         <td><?= date('d-m-Y H:i', strtotime($row['tanggal_dibuat'])) ?></td>
+                        <td>
+                            <!-- Tombol Edit -->
+                            <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal"
+                                data-bs-target="#editModal<?= $row['id_pengguna'] ?>">Edit</button>
+                
+                            <!-- Tombol Hapus -->
+                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal<?= $row['id_pengguna'] ?>">Hapus</button>
+                        </td>
                     </tr>
+                
+                    <!-- Modal Edit -->
+                    <div class="modal fade" id="editModal<?= $row['id_pengguna'] ?>" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form method="post" action="proses_edit_user.php">
+                                <input type="hidden" name="id_pengguna" value="<?= $row['id_pengguna'] ?>">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Edit Pengguna</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-2">
+                                            <label>Nama Lengkap</label>
+                                            <input type="text" name="nama" class="form-control" value="<?= $row['nama_lengkap'] ?>"
+                                                required>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>Username</label>
+                                            <input type="text" name="username" class="form-control" value="<?= $row['username'] ?>"
+                                                required>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>Email</label>
+                                            <input type="email" name="email" class="form-control" value="<?= $row['email'] ?>" required>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>Role</label>
+                                            <select name="role" class="form-select" required>
+                                                <option value="admin" <?= $row['role'] == 'admin' ? 'selected' : '' ?>>Admin</option>
+                                                <option value="siswa" <?= $row['role'] == 'siswa' ? 'selected' : '' ?>>Siswa</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-success" type="submit" name="edit_user">Simpan Perubahan</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                
+                    <!-- Modal Hapus -->
+                    <div class="modal fade" id="deleteModal<?= $row['id_pengguna'] ?>" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form method="post" action="proses_hapus_user.php">
+                                <input type="hidden" name="id_pengguna" value="<?= $row['id_pengguna'] ?>">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title">Hapus Pengguna</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Yakin ingin menghapus <strong><?= $row['nama_lengkap'] ?></strong>?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-danger" type="submit" name="hapus_user">Hapus</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 <?php endwhile; ?>
             </tbody>
         </table>
@@ -264,6 +480,8 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                 <?php endfor; ?>
             </ul>
         </nav>
+    </div>
+    </div>
     </div>
 </div>
 

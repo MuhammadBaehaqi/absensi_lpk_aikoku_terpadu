@@ -96,91 +96,141 @@ $rekap = mysqli_query($koneksi, $sql);
         .dark-mode .form-control::placeholder {
             color: #aaa;
         }
+
+        /* Warna latar dan teks card dalam mode gelap */
+        .dark-mode .card {
+            background-color: #1f1f1f;
+            color: #f1f1f1;
+        }
+
+        /* Warna header card */
+        .dark-mode .card-header {
+            background-color: #2c2f33 !important;
+            color: #fff !important;
+        }
+
+        /* Warna isi body card */
+        .dark-mode .card-body {
+            background-color: #1f1f1f;
+            color: #f1f1f1;
+            border-color: #444;
+        }
+
+        /* Tambahan hover dan border */
+        .dark-mode .card,
+        .dark-mode .card-body,
+        .dark-mode .card-header {
+            border-color: #444;
+        }
+
+        .table-responsive {
+            overflow-x: scroll !important;
+            scrollbar-width: auto;
+            /* Firefox */
+        }
+
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+            background-color: #ccc;
+            /* warna track */
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background-color: #888;
+            /* warna thumb */
+            border-radius: 4px;
+        }
     </style>
 </head>
 
 <body>
     <?php include '../includes/sidebar.php'; ?>
     <div class="content container">
-
-        <h3>Rekap Absensi Semua Siswa</h3>
-
-        <form method="GET" class="row g-3 mb-4">
-            <div class="col-md-4">
-                <label>Bulan</label>
-                <select name="bulan" class="form-control" required>
-                    <?php for ($m = 1; $m <= 12; $m++): ?>
-                        <option value="<?= str_pad($m, 2, '0', STR_PAD_LEFT) ?>" <?= $bulan == str_pad($m, 2, '0', STR_PAD_LEFT) ? 'selected' : '' ?>>
-                            <?= date('F', mktime(0, 0, 0, $m, 1)) ?>
-                        </option>
-                    <?php endfor; ?>
-                </select>
+        <div class="card shadow mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Rekap Absensi Semua Siswa</h5>
             </div>
-            <div class="col-md-3">
-                <label>Tahun</label>
-                <input type="number" name="tahun" class="form-control" value="<?= htmlspecialchars($tahun) ?>" required>
-            </div>
-            <div class="col-md-2">
-                <label>Tampilkan</label>
-                <select name="limit" class="form-control">
-                    <?php foreach ([5, 10, 20, 50] as $opt): ?>
-                        <option value="<?= $opt ?>" <?= ($limit == $opt ? 'selected' : '') ?>><?= $opt ?> data</option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="col-md-2 d-flex align-items-end">
-                <button class="btn btn-primary w-100">Tampilkan</button>
-            </div>
-            <div class="col-md-1 d-flex align-items-end">
-                <a href="rekap_bulanan_semua.php" class="btn btn-warning w-100">Reset</a>
-            </div>
-        </form>
+            <div class="card-body">
 
-        <table class="table table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>Hadir</th>
-                    <th>Izin</th>
-                    <th>Sakit</th>
-                    <th>Alpha</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $no = $offset + 1;
-                while ($r = mysqli_fetch_assoc($rekap)): ?>
-                    <tr>
-                        <td><?= $no++ ?></td>
-                        <td><?= htmlspecialchars($r['nama_lengkap']) ?></td>
-                        <td><?= (int) $r['Hadir'] ?></td>
-                        <td><?= (int) $r['Izin'] ?></td>
-                        <td><?= (int) $r['Sakit'] ?></td>
-                        <td><?= (int) $r['Alpha'] ?></td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+                <form method="GET" class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label>Bulan</label>
+                        <select name="bulan" class="form-control" required>
+                            <?php for ($m = 1; $m <= 12; $m++): ?>
+                                <option value="<?= str_pad($m, 2, '0', STR_PAD_LEFT) ?>" <?= $bulan == str_pad($m, 2, '0', STR_PAD_LEFT) ? 'selected' : '' ?>>
+                                    <?= date('F', mktime(0, 0, 0, $m, 1)) ?>
+                                </option>
+                            <?php endfor; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Tahun</label>
+                        <input type="number" name="tahun" class="form-control" value="<?= htmlspecialchars($tahun) ?>"
+                            required>
+                    </div>
+                    <div class="col-md-2">
+                        <label>Tampilkan</label>
+                        <select name="limit" class="form-control">
+                            <?php foreach ([5, 10, 20, 50] as $opt): ?>
+                                <option value="<?= $opt ?>" <?= ($limit == $opt ? 'selected' : '') ?>><?= $opt ?> data</option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button class="btn btn-primary w-100">Tampilkan</button>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <a href="rekap_bulanan_semua.php" class="btn btn-warning w-100">Reset</a>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Hadir</th>
+                                <th>Izin</th>
+                                <th>Sakit</th>
+                                <th>Alpha</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            $no = $offset + 1;
+                            while ($r = mysqli_fetch_assoc($rekap)): ?>
+                                <tr>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= htmlspecialchars($r['nama_lengkap']) ?></td>
+                                    <td><?= (int) $r['Hadir'] ?></td>
+                                    <td><?= (int) $r['Izin'] ?></td>
+                                    <td><?= (int) $r['Sakit'] ?></td>
+                                    <td><?= (int) $r['Alpha'] ?></td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
 
-        <nav>
-            <ul class="pagination">
-                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                    <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
-                        <a class="page-link"
-                            href="?bulan=<?= $bulan ?>&tahun=<?= $tahun ?>&limit=<?= $limit ?>&page=<?= $i ?>">
-                            <?= $i ?>
-                        </a>
-                    </li>
-                <?php endfor; ?>
-            </ul>
-        </nav>
-
-        <a href="rekap_bulanan_semua_pdf.php?bulan=<?= $bulan ?>&tahun=<?= $tahun ?>" target="_blank"
-            class="btn btn-danger mt-3">
-            Cetak PDF Semua Siswa
-        </a>
-        <a href="../admin/dashboard_admin.php" class="btn btn-secondary mt-3">Kembali</a>
+                    <nav>
+                        <ul class="pagination">
+                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                                    <a class="page-link"
+                                        href="?bulan=<?= $bulan ?>&tahun=<?= $tahun ?>&limit=<?= $limit ?>&page=<?= $i ?>">
+                                        <?= $i ?>
+                                    </a>
+                                </li>
+                            <?php endfor; ?>
+                        </ul>
+                    </nav>
+                </div>
+                <a href="rekap_bulanan_semua_pdf.php?bulan=<?= $bulan ?>&tahun=<?= $tahun ?>" target="_blank"
+                    class="btn btn-danger mt-3">
+                    Cetak PDF Semua Siswa
+                </a>
+                <a href="../admin/dashboard_admin.php" class="btn btn-secondary mt-3">Kembali</a>
+            </div>
+        </div>
     </div>
 </body>
 

@@ -122,101 +122,156 @@ $query = mysqli_query($koneksi, "
         .dark-mode .table-bordered td {
             border: 1px solid #444 !important;
         }
+
+        /* Warna latar dan teks card dalam mode gelap */
+        .dark-mode .card {
+            background-color: #1f1f1f;
+            color: #f1f1f1;
+        }
+
+        /* Warna header card */
+        .dark-mode .card-header {
+            background-color: #2c2f33 !important;
+            color: #fff !important;
+        }
+
+        /* Warna isi body card */
+        .dark-mode .card-body {
+            background-color: #1f1f1f;
+            color: #f1f1f1;
+            border-color: #444;
+        }
+
+        /* Tambahan hover dan border */
+        .dark-mode .card,
+        .dark-mode .card-body,
+        .dark-mode .card-header {
+            border-color: #444;
+        }
+
+        .table-responsive {
+            overflow-x: scroll !important;
+            scrollbar-width: auto;
+            /* Firefox */
+        }
+
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+            background-color: #ccc;
+            /* warna track */
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background-color: #888;
+            /* warna thumb */
+            border-radius: 4px;
+        }
+
+        .dark-mode .verified-text {
+            color: #ccc !important;
+            /* abu muda agar kontras */
+        }
     </style>
 </head>
 
 <body>
     <?php include '../includes/sidebar.php'; ?>
     <div class="content container">
-        <h3 class="mb-4">Verifikasi Koreksi Kehadiran</h3>
+        <div class="card shadow mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Verifikasi Koreksi Kehadiran</h5>
+            </div>
+            <div class="card-body">
+                <!-- Form pilih limit -->
+                <form method="GET" class="mb-3">
+                    <label for="limit" class="form-label">Tampilkan</label>
+                    <select name="limit" id="limit" class="form-select d-inline-block w-auto"
+                        onchange="this.form.submit()">
+                        <?php foreach ($limitOptions as $opt): ?>
+                            <option value="<?= $opt ?>" <?= $opt == $limit ? 'selected' : '' ?>><?= $opt ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <span>data per halaman</span>
+                    <input type="hidden" name="page" value="<?= $page ?>">
+                </form>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Tanggal</th>
+                                <th>Waktu Koreksi</th>
+                                <th>Alasan</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $no = $start + 1;
+                            while ($row = mysqli_fetch_assoc($query)): ?>
+                                <tr>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= $row['nama_lengkap'] ?></td>
+                                    <td><?= date('d-m-Y', strtotime($row['tanggal'])) ?></td>
+                                    <td><?= date('H:i', strtotime($row['waktu_koreksi'])) ?></td>
+                                    <td><?= htmlspecialchars($row['alasan']) ?></td>
+                                    <td>
+                                        <?php
+                                        if ($row['status'] == 'Disetujui') {
+                                            echo '<span class="badge bg-success">Disetujui</span>';
+                                        } elseif ($row['status'] == 'Ditolak') {
+                                            echo '<span class="badge bg-danger">Ditolak</span>';
+                                        } else {
+                                            echo '<span class="badge bg-warning text-dark">Menunggu</span>';
+                                        }
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($row['status'] == 'Menunggu'): ?>
+                                            <a href="?aksi=setuju&id=<?= $row['id_koreksi'] ?>&page=<?= $page ?>&limit=<?= $limit ?>"
+                                                class="btn btn-success btn-sm">Setujui</a>
+                                            <a href="?aksi=tolak&id=<?= $row['id_koreksi'] ?>&page=<?= $page ?>&limit=<?= $limit ?>"
+                                                class="btn btn-danger btn-sm">Tolak</a>
+                                        <?php else: ?>
+                                            <span class="text-muted verified-text">Sudah diverifikasi</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endwhile; ?>
+                        </tbody>
+                    </table>
 
-        <!-- Form pilih limit -->
-        <form method="GET" class="mb-3">
-            <label for="limit" class="form-label">Tampilkan</label>
-            <select name="limit" id="limit" class="form-select d-inline-block w-auto" onchange="this.form.submit()">
-                <?php foreach ($limitOptions as $opt): ?>
-                    <option value="<?= $opt ?>" <?= $opt == $limit ? 'selected' : '' ?>><?= $opt ?></option>
-                <?php endforeach; ?>
-            </select>
-            <span>data per halaman</span>
-            <input type="hidden" name="page" value="<?= $page ?>">
-        </form>
-
-        <table class="table table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>Tanggal</th>
-                    <th>Waktu Koreksi</th>
-                    <th>Alasan</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php $no = $start + 1;
-                while ($row = mysqli_fetch_assoc($query)): ?>
-                    <tr>
-                        <td><?= $no++ ?></td>
-                        <td><?= $row['nama_lengkap'] ?></td>
-                        <td><?= date('d-m-Y', strtotime($row['tanggal'])) ?></td>
-                        <td><?= date('H:i', strtotime($row['waktu_koreksi'])) ?></td>
-                        <td><?= htmlspecialchars($row['alasan']) ?></td>
-                        <td>
-                            <?php
-                            if ($row['status'] == 'Disetujui') {
-                                echo '<span class="badge bg-success">Disetujui</span>';
-                            } elseif ($row['status'] == 'Ditolak') {
-                                echo '<span class="badge bg-danger">Ditolak</span>';
-                            } else {
-                                echo '<span class="badge bg-warning text-dark">Menunggu</span>';
-                            }
-                            ?>
-                        </td>
-                        <td>
-                            <?php if ($row['status'] == 'Menunggu'): ?>
-                                <a href="?aksi=setuju&id=<?= $row['id_koreksi'] ?>&page=<?= $page ?>&limit=<?= $limit ?>"
-                                    class="btn btn-success btn-sm">Setujui</a>
-                                <a href="?aksi=tolak&id=<?= $row['id_koreksi'] ?>&page=<?= $page ?>&limit=<?= $limit ?>"
-                                    class="btn btn-danger btn-sm">Tolak</a>
+                    <!-- Pagination -->
+                    <nav>
+                        <ul class="pagination">
+                            <?php if ($page > 1): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?= $page - 1 ?>&limit=<?= $limit ?>">Sebelumnya</a>
+                                </li>
                             <?php else: ?>
-                                <span class="text-muted">Sudah diverifikasi</span>
+                                <li class="page-item disabled"><span class="page-link">Sebelumnya</span></li>
                             <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
 
-        <!-- Pagination -->
-        <nav>
-            <ul class="pagination">
-                <?php if ($page > 1): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=<?= $page - 1 ?>&limit=<?= $limit ?>">Sebelumnya</a>
-                    </li>
-                <?php else: ?>
-                    <li class="page-item disabled"><span class="page-link">Sebelumnya</span></li>
-                <?php endif; ?>
+                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $i ?>&limit=<?= $limit ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor; ?>
 
-                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                    <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                        <a class="page-link" href="?page=<?= $i ?>&limit=<?= $limit ?>"><?= $i ?></a>
-                    </li>
-                <?php endfor; ?>
-
-                <?php if ($page < $total_pages): ?>
-                    <li class="page-item">
-                        <a class="page-link" href="?page=<?= $page + 1 ?>&limit=<?= $limit ?>">Berikutnya</a>
-                    </li>
-                <?php else: ?>
-                    <li class="page-item disabled"><span class="page-link">Berikutnya</span></li>
-                <?php endif; ?>
-            </ul>
-        </nav>
-
-        <a href="dashboard_admin.php" class="btn btn-secondary mt-3">Kembali ke Dashboard</a>
+                            <?php if ($page < $total_pages): ?>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=<?= $page + 1 ?>&limit=<?= $limit ?>">Berikutnya</a>
+                                </li>
+                            <?php else: ?>
+                                <li class="page-item disabled"><span class="page-link">Berikutnya</span></li>
+                            <?php endif; ?>
+                        </ul>
+                    </nav>
+                </div>
+                <a href="dashboard_admin.php" class="btn btn-secondary mt-3">Kembali ke Dashboard</a>
+            </div>
+        </div>
     </div>
 </body>
 

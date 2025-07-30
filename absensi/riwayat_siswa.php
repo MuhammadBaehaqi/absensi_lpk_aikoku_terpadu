@@ -40,25 +40,60 @@ $query = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id
                     <th>Tanggal</th>
                     <th>Jam Masuk</th>
                     <th>Jam Pulang</th>
-                    <th>Keterangan</th>
+                    <th>Status Kehadiran</th>
                 </tr>
             </thead>
             <tbody>
                 <?php while ($row = mysqli_fetch_assoc($query)): ?>
                     <tr>
                         <td><?= date('d-m-Y', strtotime($row['tanggal'])) ?></td>
-                        <td><?= $row['jam_masuk'] ?? '-' ?></td>
-                        <td><?= $row['jam_pulang'] ?? '-' ?></td>
+
+                        <!-- Jam Masuk -->
+                        <td>
+                            <?= $row['jam_masuk'] ? $row['jam_masuk'] : '<span class="text-muted">-</span>' ?>
+                        </td>
+
+                        <!-- Jam Pulang -->
+                        <td>
+                            <?php if (!empty($row['jam_pulang'])): ?>
+                                <?= $row['jam_pulang'] ?>
+                            <?php else: ?>
+                                <span class="badge bg-secondary">Belum Absen Pulang</span>
+                            <?php endif; ?>
+                        </td>
+
+                        <!-- Status -->
                         <td>
                             <?php
-                            if ($row['keterangan'] == 'Alpha') {
-                                // Cek apakah ada koreksi
-                                $tanggal = $row['tanggal'];
-                                $cekKoreksi = mysqli_query($koneksi, "
-        SELECT status FROM tb_koreksi_absen 
+                            $tanggal = $row['tanggal'];
+                            $jam_masuk = strtotime($row['jam_masuk'] ?? '00:00:00');
+                            $batas_terlambat = strtotime('10:00:00');
+
+                            // Cek apakah ada izin yang disetujui
+                            $cekIzin = mysqli_query($koneksi, "
+        SELECT jenis FROM tb_pengajuan_izin 
         WHERE id_pengguna = '$id_pengguna' 
         AND tanggal = '$tanggal' 
-        ORDER BY id_koreksi DESC LIMIT 1");
+        AND status = 'Diterima' 
+        ORDER BY id_pengajuan DESC LIMIT 1
+    ");
+
+                            if (mysqli_num_rows($cekIzin) > 0) {
+                                $izin = mysqli_fetch_assoc($cekIzin);
+                                $jenis = htmlspecialchars($izin['jenis']);
+
+                                // Warna badge tergantung jenis izin
+                                $warna = $jenis == 'Sakit' ? 'bg-info text-dark' : 'bg-warning text-dark';
+                                echo "<span class='badge $warna'>$jenis ✅</span>";
+                            }
+
+                            // Tidak ada izin disetujui, lanjut normal
+                            elseif ($row['keterangan'] == 'Alpha') {
+                                $cekKoreksi = mysqli_query($koneksi, "
+            SELECT status FROM tb_koreksi_absen 
+            WHERE id_pengguna = '$id_pengguna' 
+            AND tanggal = '$tanggal' 
+            ORDER BY id_koreksi DESC LIMIT 1");
 
                                 if (mysqli_num_rows($cekKoreksi) > 0) {
                                     $kor = mysqli_fetch_assoc($cekKoreksi);
@@ -72,13 +107,12 @@ $query = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id
                                 } else {
                                     echo '<span class="badge bg-danger">Alpha ❌</span>';
                                 }
+
                             } elseif (!empty($row['jam_masuk'])) {
                                 if ($row['keterangan'] == 'Hadir (Lupa Absen)') {
                                     echo '<span class="badge bg-info text-dark">Hadir (Lupa Absen) 📝</span>';
                                 } else {
-                                    $jam_masuk = strtotime($row['jam_masuk']);
-                                    $batas = strtotime('09:00:00');
-                                    if ($jam_masuk > $batas) {
+                                    if ($jam_masuk > $batas_terlambat) {
                                         echo '<span class="badge bg-warning text-dark">Terlambat ⏰</span>';
                                     } else {
                                         echo '<span class="badge bg-success">Hadir ✅</span>';

@@ -2,22 +2,27 @@
 include '../includes/session.php';
 include '../includes/config.php';
 
+date_default_timezone_set('Asia/Jakarta');
+
 $id_pengguna = $_SESSION['id_pengguna'];
 $tanggal = date('Y-m-d');
 $jam = date('H:i:s');
+
+// Cek waktu sekarang
+$sekarang = strtotime($jam);
+$batas_awal = strtotime('15:00:00');
+$batas_akhir = strtotime('18:00:00');
 
 $cek = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id_pengguna' AND tanggal='$tanggal'");
 $data = mysqli_fetch_assoc($cek);
 
 if ($data) {
     if (empty($data['jam_masuk'])) {
-        // Belum absen masuk sama sekali
         $pesan = "Kamu belum absen masuk hari ini. Tidak bisa absen pulang.";
     } elseif ($data['keterangan'] == 'Alpha') {
-        // Masih Alpha, cek apakah koreksi sudah disetujui
+        // Koreksi
         $cekKoreksi = mysqli_query($koneksi, "SELECT * FROM tb_koreksi_absen 
-            WHERE id_pengguna='$id_pengguna' 
-            AND tanggal='$tanggal' 
+            WHERE id_pengguna='$id_pengguna' AND tanggal='$tanggal' 
             ORDER BY id_koreksi DESC LIMIT 1");
 
         if (mysqli_num_rows($cekKoreksi) > 0) {
@@ -25,25 +30,31 @@ if ($data) {
             if ($koreksi['status'] == 'Menunggu') {
                 $pesan = "Kamu sudah mengajukan koreksi. Tunggu verifikasi admin sebelum bisa absen pulang.";
             } elseif ($koreksi['status'] == 'Disetujui') {
-                // Admin sudah setujui, boleh lanjut
-                if (empty($data['jam_pulang'])) {
+                if ($sekarang < $batas_awal) {
+                    $pesan = "Belum waktunya absen pulang. Minimal pukul 15:00.";
+                } elseif ($sekarang > $batas_akhir) {
+                    $pesan = "Sudah melewati batas waktu absen pulang (18:00).";
+                } elseif (empty($data['jam_pulang'])) {
                     mysqli_query($koneksi, "UPDATE tb_absensi SET jam_pulang='$jam' WHERE id_absen='{$data['id_absen']}'");
                     $pesan = "Absen pulang berhasil!";
                 } else {
                     $pesan = "Kamu sudah absen pulang hari ini!";
                 }
             } else {
-                // Koreksi ditolak
                 $pesan = "Koreksi ditolak. Kamu dianggap Alpha dan tidak bisa absen pulang.";
             }
         } else {
-            // Tidak ada koreksi sama sekali
             $pesan = "Kamu belum absen masuk hari ini. Tidak bisa absen pulang.";
         }
     } elseif (empty($data['jam_pulang'])) {
-        // Normal: sudah masuk, belum pulang
-        mysqli_query($koneksi, "UPDATE tb_absensi SET jam_pulang='$jam' WHERE id_absen='{$data['id_absen']}'");
-        $pesan = "Absen pulang berhasil!";
+        if ($sekarang < $batas_awal) {
+            $pesan = "Belum waktunya absen pulang. Minimal pukul 15:00.";
+        } elseif ($sekarang > $batas_akhir) {
+            $pesan = "Sudah melewati batas waktu absen pulang (18:00).";
+        } else {
+            mysqli_query($koneksi, "UPDATE tb_absensi SET jam_pulang='$jam' WHERE id_absen='{$data['id_absen']}'");
+            $pesan = "Absen pulang berhasil!";
+        }
     } else {
         $pesan = "Kamu sudah absen pulang hari ini!";
     }

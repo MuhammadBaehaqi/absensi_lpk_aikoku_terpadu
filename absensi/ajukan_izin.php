@@ -2,10 +2,14 @@
 include '../includes/session.php';
 include '../includes/config.php';
 
-$id_pengguna = $_SESSION['id_pengguna'];
-$tanggal = date('Y-m-d');
+date_default_timezone_set('Asia/Jakarta');
 
-// Proses kirim form
+$id_pengguna = $_SESSION['id_pengguna'];
+$tanggal_hari_ini = date('Y-m-d');
+$pesan = '';
+$peringatan = '';
+
+// Jika form disubmit
 if (isset($_POST['submit'])) {
     $tgl = $_POST['tanggal'];
     $jenis = $_POST['jenis'];
@@ -15,10 +19,21 @@ if (isset($_POST['submit'])) {
     if (mysqli_num_rows($cek) > 0) {
         $pesan = "Kamu sudah mengajukan izin/sakit untuk tanggal tersebut.";
     } else {
-        mysqli_query($koneksi, "INSERT INTO tb_pengajuan_izin (id_pengguna, tanggal, jenis, alasan) 
-                                VALUES ('$id_pengguna', '$tgl', '$jenis', '$alasan')");
+        mysqli_query($koneksi, "INSERT INTO tb_pengajuan_izin (id_pengguna, tanggal, jenis, alasan, status) 
+                                VALUES ('$id_pengguna', '$tgl', '$jenis', '$alasan', 'Menunggu')");
         $pesan = "Pengajuan berhasil dikirim. Menunggu verifikasi admin.";
     }
+}
+
+// Peringatan jika sudah absen hari ini
+$cek_absen = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id_pengguna' AND tanggal='$tanggal_hari_ini'");
+$absen = mysqli_fetch_assoc($cek_absen);
+if ($absen && !empty($absen['jam_masuk'])) {
+    $peringatan = "<div class='alert alert-warning'>
+    ⚠️ <strong>Perhatian!</strong> Kamu sudah melakukan absen masuk hari ini pada pukul <strong>{$absen['jam_masuk']}</strong>.<br>
+    Ajukan izin atau sakit <u>hanya jika kamu terpaksa tidak bisa melanjutkan kegiatan hari ini</u> karena alasan penting atau kondisi kesehatan.<br>
+    <small class='text-muted'>Contoh: pulang lebih awal karena sakit, urusan keluarga mendadak, dan lain-lain.</small>
+</div>";
 }
 ?>
 
@@ -46,15 +61,20 @@ if (isset($_POST['submit'])) {
             </div>
         </div>
     </nav>
-    <div class="container mt-5">
+
+    <div class="container mt-5" style="max-width: 650px;">
         <h3>Ajukan Izin / Sakit</h3>
-        <?php if (isset($pesan)): ?>
+
+        <?php if (!empty($pesan)): ?>
             <div class="alert alert-info"><?= $pesan ?></div>
         <?php endif; ?>
+
+        <?= $peringatan ?>
+
         <form method="POST">
             <div class="mb-3">
                 <label for="tanggal">Tanggal</label>
-                <input type="date" name="tanggal" class="form-control" required value="<?= $tanggal ?>">
+                <input type="date" name="tanggal" class="form-control" required value="<?= $tanggal_hari_ini ?>">
             </div>
             <div class="mb-3">
                 <label for="jenis">Jenis Pengajuan</label>

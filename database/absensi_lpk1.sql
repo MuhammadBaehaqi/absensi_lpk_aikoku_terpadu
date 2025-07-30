@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 29 Jul 2025 pada 17.23
+-- Waktu pembuatan: 30 Jul 2025 pada 17.52
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -56,7 +56,23 @@ INSERT INTO `tb_absensi` (`id_absen`, `id_pengguna`, `tanggal`, `jam_masuk`, `ja
 (13, 12, '2025-07-29', '08:00:00', '16:09:35', NULL),
 (14, 15, '2025-07-29', '08:00:00', '15:31:11', NULL),
 (15, 18, '2025-07-29', '08:00:00', NULL, NULL),
-(16, 6, '2025-07-29', '15:16:40', '15:16:49', 'Hadir');
+(16, 6, '2025-07-29', '15:16:40', '15:16:49', 'Hadir'),
+(17, 7, '2025-07-30', '00:00:00', '00:00:00', 'Hadir'),
+(18, 9, '2025-07-30', '09:36:03', '09:36:09', 'Izin'),
+(19, 11, '2025-07-30', '09:44:57', NULL, 'Hadir'),
+(20, 10, '2025-07-30', '10:16:45', NULL, 'Izin'),
+(21, 8, '2025-07-30', NULL, NULL, 'Alpha'),
+(22, 12, '2025-07-30', NULL, NULL, 'Alpha'),
+(23, 15, '2025-07-30', NULL, NULL, 'Alpha'),
+(24, 18, '2025-07-30', NULL, NULL, 'Alpha'),
+(25, 19, '2025-07-30', NULL, NULL, 'Alpha'),
+(26, 20, '2025-07-30', NULL, NULL, 'Alpha'),
+(27, 21, '2025-07-30', NULL, NULL, 'Alpha'),
+(28, 22, '2025-07-30', NULL, NULL, 'Alpha'),
+(29, 23, '2025-07-30', NULL, NULL, 'Alpha'),
+(30, 24, '2025-07-30', NULL, NULL, 'Alpha'),
+(31, 25, '2025-07-30', NULL, NULL, 'Alpha'),
+(32, 26, '2025-07-30', NULL, NULL, 'Izin');
 
 -- --------------------------------------------------------
 
@@ -110,7 +126,11 @@ INSERT INTO `tb_pengajuan_izin` (`id_pengajuan`, `id_pengguna`, `tanggal`, `jeni
 (1, 7, '2025-06-30', 'Sakit', 'saya ijin', 'Diterima'),
 (2, 8, '2025-07-01', 'Sakit', 'nyong ra bisa teka', 'Diterima'),
 (3, 8, '2025-07-26', 'Sakit', 'mbuh malas\r\n', 'Ditolak'),
-(4, 9, '2025-07-29', 'Izin', 'aa', 'Diterima');
+(4, 9, '2025-07-29', 'Izin', 'aa', 'Diterima'),
+(5, 7, '2025-07-30', 'Sakit', 'map', 'Diterima'),
+(6, 9, '2025-07-30', 'Izin', 'maap', 'Diterima'),
+(7, 10, '2025-07-30', 'Izin', 'coba', 'Diterima'),
+(8, 26, '2025-07-30', 'Izin', 'Maap', 'Diterima');
 
 -- --------------------------------------------------------
 
@@ -144,17 +164,15 @@ INSERT INTO `tb_pengguna` (`id_pengguna`, `nama_lengkap`, `username`, `email`, `
 (14, 'haki', 'haki1', 'coba1@gmail.com', '$2y$10$NqYJ9BptL1PN2vakveflmOFdekKEINceTYWJo06c0rXMcLluh.SRO', 'admin', '2025-07-29 09:58:24'),
 (15, 'dimas', 'dimas1', 'xulo@mailinator.com', '$2y$10$lIytytmKuYJAySUfFV5MnuWDaB7wRSrzPhbALxq1c7rEW8cVZKx8u', 'siswa', '2025-07-29 09:58:24'),
 (16, 'dimas', 'dimas2', 'coba@gmail.com', '$2y$10$OkzF.UzodqFnP1PHBoLas.vGmHOnqFRt9QVxYa3eEO9tGo2roUPLu', 'admin', '2025-07-29 09:58:24'),
-(17, 'dimas', 'dimas3', 'dimas12@gmail.com', '$2y$10$4ZkjIWeq3sv72vOqmTfVWepCOv9PsmTtMktpJI1PpHxTwQ2f3kIza', 'admin', '2025-07-29 09:58:24'),
 (18, 'anwar jaman', 'anwar1', 'anwar@gmail.com', '$2y$10$lmzcO9wK10hsamhfftdjKefM.xJPcsFWCwGBEAqgW6pNZxLeXv77W', 'siswa', '2025-07-29 09:58:24'),
-(19, 'haki', 'haki3', 'haki12@gmail.com', '$2y$10$uKSSGinda/dhQHwTsWPbce.MhTaFzenxasi9oesEQDohWp5S.Whha', 'admin', '2025-07-29 09:58:24'),
+(19, 'haki1', 'haki5', 'haki12@gmail.com', '$2y$10$uKSSGinda/dhQHwTsWPbce.MhTaFzenxasi9oesEQDohWp5S.Whha', 'siswa', '2025-07-29 09:58:24'),
 (20, 'naful muzaki', 'naul', 'naul@gmail.com', '$2y$10$5nM01xZFqsGLXtOPo85Fnu4cw9DdmyAuQ4pq6DdfW7XXoMTqxFGTi', 'siswa', '2025-07-29 21:31:13'),
 (21, 'aizul fikri', 'izul', 'izul@gmail.com', '$2y$10$Frihmi0xr1.h.AtgmKLyL.SQkdzFkSg9lNweyJYhvs770ym1x1g/y', 'siswa', '2025-07-29 22:14:58'),
 (22, 'hikmatul hukamah', 'hikmah', 'hikmah@gmail.com', '$2y$10$2OEcrFdogFs8WnF58m0HzelkCW7Nso78lupzT89j4tMqhvObJHplu', 'siswa', '2025-07-29 22:15:19'),
 (23, 'ustad zaki', 'zaky', 'zaky@gmail.com', '$2y$10$/23wEZw/xaihFODvvN4ugO57X4TBC49YodlffdMDMDek3uMmTxzzS', 'siswa', '2025-07-29 22:15:42'),
 (24, 'farhan setiawan', 'farhan', 'farhan@gmail.com', '$2y$10$l4v2EiDgPRWrgFrajpmns.kdSRnpA/5pJ6/NUsEPTxuNXm5NwdvaK', 'siswa', '2025-07-29 22:16:20'),
 (25, 'wendi setiawan', 'wendi', 'wendi@gmail.com', '$2y$10$yIHz45EZc0tjjA.AFdmZOeSx978tCpGdy6AYEWKnc9f72CkyydCWa', 'siswa', '2025-07-29 22:16:38'),
-(26, 'agip setiawan', 'agip', 'agip@gmail.com', '$2y$10$fmpTlwRb86jqLDhJD5Ew3um6MAystEF546.govIrcEPBFnTnECDo.', 'siswa', '2025-07-29 22:16:55'),
-(27, 'rafi setiawan', 'rafi', 'rafi@gmail.com', '$2y$10$9McrZNqp.NRcK2lH1QNtk.l.h/mV0QBC8f5CfzGuwA8chL3SK5bn2', 'siswa', '2025-07-29 22:17:18');
+(26, 'agip setiawan', 'agip', 'agip@gmail.com', '$2y$10$fmpTlwRb86jqLDhJD5Ew3um6MAystEF546.govIrcEPBFnTnECDo.', 'siswa', '2025-07-29 22:16:55');
 
 --
 -- Indexes for dumped tables
@@ -196,7 +214,7 @@ ALTER TABLE `tb_pengguna`
 -- AUTO_INCREMENT untuk tabel `tb_absensi`
 --
 ALTER TABLE `tb_absensi`
-  MODIFY `id_absen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id_absen` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_koreksi_absen`
@@ -208,7 +226,7 @@ ALTER TABLE `tb_koreksi_absen`
 -- AUTO_INCREMENT untuk tabel `tb_pengajuan_izin`
 --
 ALTER TABLE `tb_pengajuan_izin`
-  MODIFY `id_pengajuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_pengajuan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_pengguna`

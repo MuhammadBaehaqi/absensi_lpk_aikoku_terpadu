@@ -41,23 +41,115 @@ if ($absen && !empty($absen['jam_masuk'])) {
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
     <title>Ajukan Izin / Sakit</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="icon" type="image/png" href="../img/logo.png">
+    <style>
+        .logo-img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        /* Tambahan CSS responsif untuk HP */
+        @media (max-width: 576px) {
+            .navbar .navbar-text {
+                font-size: 0.8rem;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            .logo-img {
+                height: 30px;
+                margin-right: 5px;
+            }
+
+            .btn {
+                font-size: 0.8rem;
+                padding: 8px 10px;
+            }
+
+            .alert,
+            .card,
+            .alert-info {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            .card-title {
+                font-size: 1rem;
+            }
+
+            ol {
+                padding-left: 1rem;
+            }
+        }
+
+        .logo-img {
+            height: 40px;
+        }
+
+        @media (max-width: 576px) {
+            .navbar .navbar-brand {
+                font-size: 1rem;
+            }
+
+            .navbar .text-white {
+                font-size: 0.85rem;
+            }
+
+            .btn.btn-outline-light {
+                font-size: 0.75rem;
+                padding: 4px 10px;
+            }
+        }
+
+        .logo-img {
+            height: 40px;
+        }
+
+        @media (max-width: 576px) {
+            .navbar .navbar-brand {
+                font-size: 1rem;
+            }
+
+            .navbar .text-white,
+            .navbar .small {
+                font-size: 0.85rem;
+            }
+
+            .btn.btn-outline-light {
+                font-size: 0.75rem;
+                padding: 4px 10px;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <div class="container">
-            <div class="d-flex align-items-center">
-                <img src="../img/logo.png" alt="Logo LPK" class="logo-img" style="height: 40px; margin-right: 10px;">
-                <span class="navbar-brand mb-0 h5">LPK AIKOKU TERPADU</span>
+        <div class="container text-white">
+            <!-- Desktop View (Logo kiri, Salam kanan) -->
+            <div class="d-none d-md-flex justify-content-between align-items-center w-100">
+                <div class="d-flex align-items-center">
+                    <img src="../img/logo.png" alt="Logo LPK" class="logo-img me-2">
+                    <span class="navbar-brand mb-0 h5">LPK AIKOKU TERPADU</span>
+                </div>
+                <div class="text-end small">
+                    <div>いらっしゃいませ, <?= $_SESSION['username']; ?> (<?= $_SESSION['role']; ?>)</div>
+                    <a href="auth/logout.php" class="btn btn-outline-light btn-sm mt-1">Logout</a>
+                </div>
             </div>
-            <div class="d-flex">
-                <span class="navbar-text text-white me-3">
-                    Selamat datang, <?= $_SESSION['username']; ?> (<?= $_SESSION['role']; ?>)
-                </span>
-                <a href="../auth/logout.php" class="btn btn-outline-light btn-sm">Logout</a>
+
+            <!-- Mobile View (Semua tengah, logo lebih besar, teks tengah) -->
+            <div class="d-block d-md-none w-100 text-center">
+                <img src="../img/logo.png" alt="Logo LPK" class="mb-1" style="height: 45px;"> <!-- DIBESARKAN -->
+                <div class="fw-bold text-white" style="font-size: 1rem;">LPK AIKOKU TERPADU</div>
+                <div class="small">いらっしゃいませ, <?= $_SESSION['username']; ?> (<?= $_SESSION['role']; ?>)</div>
+                <a href="auth/logout.php" class="btn btn-outline-light btn-sm mt-1">Logout</a>
             </div>
         </div>
     </nav>

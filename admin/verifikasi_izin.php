@@ -36,6 +36,7 @@ if (isset($_GET['id']) && isset($_GET['aksi'])) {
         mysqli_query($koneksi, "UPDATE tb_pengajuan_izin SET status='Ditolak' WHERE id_pengajuan='$id'");
     }
 
+
     header("Location: verifikasi_izin.php?page=$page&limit=$limit");
     exit;
 }
@@ -114,7 +115,7 @@ $data = mysqli_query($koneksi, "
             border: 1px solid #444 !important;
         }
 
-         /* Warna latar dan teks card dalam mode gelap */
+        /* Warna latar dan teks card dalam mode gelap */
         .dark-mode .card {
             background-color: #1f1f1f;
             color: #f1f1f1;
@@ -226,8 +227,8 @@ $data = mysqli_query($koneksi, "
                                     <td>
                                         <?php if ($row['status'] == 'Menunggu'): ?>
                                             <a href="?id=<?= $row['id_pengajuan'] ?>&aksi=terima&page=
-                        <?= $page ?>&limit=
-                        <?= $limit ?>" class="btn btn-success btn-sm">Terima</a>
+                                                <?= $page ?>&limit=
+                                                <?= $limit ?>" class="btn btn-success btn-sm">Terima</a>
                                             <a href="?id=<?= $row['id_pengajuan'] ?>&aksi=tolak&page=<?= $page ?>&limit=<?= $limit ?>"
                                                 class="btn btn-danger btn-sm">Tolak</a>
                                         <?php else: ?>

@@ -6,37 +6,64 @@ $tanggal = date('Y-m-d');
 $jam_sekarang = date('H:i');
 $hari = date('N'); // 1 = Senin, ..., 7 = Minggu
 
-// Minggu = tidak ada absensi
+// File log dan marker
+$markerFile = __DIR__ . "/alpha_marker_$tanggal.txt";
+$logFile = __DIR__ . "/alpha_log_$tanggal.txt";
+
+// Fungsi log
+function logAlpha($pesan)
+{
+    global $logFile;
+    $waktu = date('H:i:s');
+    file_put_contents($logFile, "[$waktu] $pesan\n", FILE_APPEND);
+}
+
+// 1. Lewat hari Minggu?
 if ($hari == 7) {
-    echo "📅 Hari Minggu - Tidak ada auto-Alpha.\n";
+    logAlpha("Hari Minggu — tidak ada auto-alpha.");
     exit;
 }
 
-// Batasi waktu sampai jam 18:00
+// 2. Belum lewat jam 18:00?
 if ($jam_sekarang < '18:00') {
-    echo "⏳ Masih belum lewat batas waktu (18:00). Auto-Alpha belum dijalankan.\n";
+    logAlpha("Masih jam $jam_sekarang — tunggu sampai 18:00.");
     exit;
 }
 
-// Cek apakah sudah diproses hari ini
-$cekMarker = __DIR__ . "/alpha_marker_$tanggal.txt";
-if (file_exists($cekMarker)) {
-    echo "✅ Auto-Alpha sudah dijalankan hari ini.\n";
+// 3. Sudah diproses hari ini?
+if (file_exists($markerFile)) {
+    logAlpha("Sudah diproses hari ini.");
     exit;
 }
 
-// Proses auto-Alpha
+// 4. Proses auto-alpha
+$jumlahBaru = 0;
+$jumlahUpdate = 0;
+
 $siswa = mysqli_query($koneksi, "SELECT id_pengguna FROM tb_pengguna WHERE role = 'siswa'");
-$jumlahAlpha = 0;
-
 while ($s = mysqli_fetch_assoc($siswa)) {
     $id = $s['id_pengguna'];
+
+    // Cek apakah sudah ada data absensi
     $cek = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id' AND tanggal='$tanggal'");
+
     if (mysqli_num_rows($cek) == 0) {
+        // Belum ada → insert Alpha
         mysqli_query($koneksi, "INSERT INTO tb_absensi (id_pengguna, tanggal, keterangan) VALUES ('$id', '$tanggal', 'Alpha')");
-        $jumlahAlpha++;
+        $jumlahBaru++;
+        logAlpha("✅ Insert Alpha untuk ID $id (baru)");
+    } else {
+        // Ada, tapi kosong?
+        $absen = mysqli_fetch_assoc($cek);
+        if (empty($absen['jam_masuk']) && empty($absen['jam_pulang']) && empty($absen['keterangan'])) {
+            mysqli_query($koneksi, "UPDATE tb_absensi SET keterangan='Alpha' WHERE id_absensi='{$absen['id_absensi']}'");
+            $jumlahUpdate++;
+            logAlpha("🔄 Update jadi Alpha untuk ID $id (data kosong)");
+        }
     }
 }
 
-file_put_contents($cekMarker, 'done');
-echo "✅ Proses selesai. $jumlahAlpha siswa ditandai sebagai Alpha.\n";
+// Tandai sudah dijalankan
+file_put_contents($markerFile, 'done');
+logAlpha("🎉 Auto-Alpha selesai. Tambah baru: $jumlahBaru, update: $jumlahUpdate.");
+echo "✅ Proses selesai. Tambah baru: $jumlahBaru, update: $jumlahUpdate.\n";

@@ -257,7 +257,7 @@ $total_pages = ceil($total_data / $limit);
                                     <td><?= $row['nama_lengkap'] ?></td>
                                     <td><?= date('d-m-Y', strtotime($row['tanggal'])) ?></td>
                                     <td>
-                                        <?= $row['jam_masuk'] ? $row['jam_masuk'] : '<span class="text-muted">-</span>' ?>
+                                        <?= $row['jam_masuk'] ? $row['jam_masuk'] : '<span class="badge bg-secondary">Belum Absen Masuk</span>' ?>
                                     </td>
                                     <td>
                                         <?= $row['jam_pulang'] ? $row['jam_pulang'] : '<span class="badge bg-secondary">Belum Absen Pulang</span>' ?>
@@ -282,24 +282,42 @@ $total_pages = ceil($total_data / $limit);
                                             $warna = $jenis == 'Sakit' ? 'bg-info text-dark' : 'bg-warning text-dark';
                                             echo "<span class='badge $warna'>$jenis ✅</span>";
                                         } elseif ($row['keterangan'] == 'Alpha') {
-                                            $cekKoreksi = mysqli_query($koneksi, "
-                                            SELECT status FROM tb_koreksi_absen 
-                                            WHERE id_pengguna = '{$row['id_pengguna']}' 
-                                            AND tanggal = '$tanggal' 
-                                            ORDER BY id_koreksi DESC LIMIT 1
-                                        ");
-                                            if (mysqli_num_rows($cekKoreksi) > 0) {
-                                                $kor = mysqli_fetch_assoc($cekKoreksi);
-                                                if ($kor['status'] == 'Menunggu') {
-                                                    echo '<span class="badge bg-warning text-dark">Menunggu Koreksi ⚠️</span>';
-                                                } elseif ($kor['status'] == 'Disetujui') {
-                                                    echo '<span class="badge bg-info text-dark">Koreksi Diterima 📝</span>';
+                                            // Cek apakah izin/sakit ditolak
+                                            $cekTolak = mysqli_query($koneksi, "
+                                                SELECT jenis FROM tb_pengajuan_izin 
+                                                WHERE id_pengguna = '{$row['id_pengguna']}' 
+                                                AND tanggal = '$tanggal' 
+                                                AND status = 'Ditolak' 
+                                                ORDER BY id_pengajuan DESC LIMIT 1
+                                            ");
+                                            if (mysqli_num_rows($cekTolak) > 0) {
+                                                $tolak = mysqli_fetch_assoc($cekTolak);
+                                                $jenisTolak = htmlspecialchars($tolak['jenis']);
+                                                echo "<span class='badge bg-danger'>Alpha ❌ ($jenisTolak Ditolak)</span>";
+                                            }
+
+                                            // Jika tidak ada izin yang ditolak, cek koreksi
+                                            else {
+                                                $cekKoreksi = mysqli_query($koneksi, "
+                                                    SELECT status FROM tb_koreksi_absen 
+                                                    WHERE id_pengguna = '{$row['id_pengguna']}' 
+                                                    AND tanggal = '$tanggal' 
+                                                    ORDER BY id_koreksi DESC LIMIT 1
+                                                ");
+                                                if (mysqli_num_rows($cekKoreksi) > 0) {
+                                                    $kor = mysqli_fetch_assoc($cekKoreksi);
+                                                    if ($kor['status'] == 'Menunggu') {
+                                                        echo '<span class="badge bg-warning text-dark">Menunggu Koreksi ⚠️</span>';
+                                                    } elseif ($kor['status'] == 'Disetujui') {
+                                                        echo '<span class="badge bg-info text-dark">Koreksi Diterima 📝</span>';
+                                                    } else {
+                                                        echo '<span class="badge bg-danger">Alpha ❌</span>';
+                                                    }
                                                 } else {
                                                     echo '<span class="badge bg-danger">Alpha ❌</span>';
                                                 }
-                                            } else {
-                                                echo '<span class="badge bg-danger">Alpha ❌</span>';
                                             }
+
                                         } elseif (!empty($row['jam_masuk'])) {
                                             if ($row['keterangan'] == 'Hadir (Lupa Absen)') {
                                                 echo '<span class="badge bg-info text-dark">Hadir (Lupa Absen) 📝</span>';

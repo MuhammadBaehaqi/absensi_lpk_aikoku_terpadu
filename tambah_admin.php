@@ -9,8 +9,8 @@ if (mysqli_num_rows($check_admin) == 0) {
     $password_admin = password_hash("admin123", PASSWORD_DEFAULT);
     $role_admin = "admin";
 
-    mysqli_query($koneksi, "INSERT INTO tb_pengguna (nama_lengkap, username, password, role) 
-        VALUES ('$nama_admin', '$username_admin', '$password_admin', '$role_admin')");
+    mysqli_query($koneksi, "INSERT INTO tb_pengguna (nama_lengkap, username, password, role, no_telp)
+VALUES ('$nama_admin', '$username_admin', '$password_admin', '$role_admin', '08123456789')");
     echo "✅ Admin berhasil ditambahkan<br>";
 } else {
     echo "⚠️ Username admin sudah ada<br>";
@@ -24,8 +24,8 @@ if (mysqli_num_rows($check_siswa) == 0) {
     $password_siswa = password_hash("siswa123", PASSWORD_DEFAULT);
     $role_siswa = "siswa";
 
-    mysqli_query($koneksi, "INSERT INTO tb_pengguna (nama_lengkap, username, password, role) 
-        VALUES ('$nama_siswa', '$username_siswa', '$password_siswa', '$role_siswa')");
+    mysqli_query($koneksi, "INSERT INTO tb_pengguna (nama_lengkap, username, password, role, no_telp) 
+    VALUES ('$nama_siswa', '$username_siswa', '$password_siswa', '$role_siswa', '08123456788')");
     echo "✅ Siswa berhasil ditambahkan<br>";
 } else {
     echo "⚠️ Username siswa1 sudah ada<br>";

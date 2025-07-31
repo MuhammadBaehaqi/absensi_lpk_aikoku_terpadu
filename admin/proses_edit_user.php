@@ -7,6 +7,7 @@ if (isset($_POST['edit_user'])) {
     $nama = mysqli_real_escape_string($koneksi, $_POST['nama']);
     $username = mysqli_real_escape_string($koneksi, $_POST['username']);
     $email = mysqli_real_escape_string($koneksi, $_POST['email']);
+    $no_telp = mysqli_real_escape_string($koneksi, $_POST['no_telp']);
     $role = $_POST['role'];
 
     // Cek apakah username dan email sama (tidak diperbolehkan)
@@ -23,7 +24,7 @@ if (isset($_POST['edit_user'])) {
     } else {
         // Jika valid, lakukan update
         mysqli_query($koneksi, "UPDATE tb_pengguna 
-            SET nama_lengkap='$nama', username='$username', email='$email', role='$role'
+            SET nama_lengkap='$nama', username='$username', email='$email', no_telp='$no_telp', role='$role'
             WHERE id_pengguna='$id'");
         $_SESSION['toast'] = ['message' => 'Data berhasil diperbarui!', 'type' => 'success'];
     }

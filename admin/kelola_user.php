@@ -17,6 +17,7 @@ if (isset($_POST['submit'])) {
     $nama = mysqli_real_escape_string($koneksi, $_POST['nama']);
     $username = mysqli_real_escape_string($koneksi, $_POST['username']);
     $email = mysqli_real_escape_string($koneksi, $_POST['email']);
+    $no_telp = mysqli_real_escape_string($koneksi, $_POST['no_telp']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
     $role = $_POST['role'];
 
@@ -34,9 +35,9 @@ if (isset($_POST['submit'])) {
     } else {
         // Nama boleh sama, langsung simpan
         mysqli_query($koneksi, "INSERT INTO tb_pengguna 
-            (nama_lengkap, username, email, password, role, tanggal_dibuat)
-            VALUES 
-            ('$nama', '$username', '$email', '$password', '$role', NOW())");
+                (nama_lengkap, username, email, no_telp, password, role, tanggal_dibuat)
+                VALUES 
+                ('$nama', '$username', '$email', '$no_telp', '$password', '$role', NOW())");
 
         $_SESSION['toast'] = ['message' => 'Pengguna berhasil ditambahkan!', 'type' => 'success'];
     }
@@ -180,6 +181,34 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
             background-color: #888; /* warna thumb */
             border-radius: 4px;
         }
+
+        /* DARK MODE: Modal Styling */
+.dark-mode .modal-content {
+    background-color: #2a2a2a;
+    color: #fff;
+    border: 1px solid #444;
+}
+
+.dark-mode .modal-header {
+    background-color: #1f1f1f;
+    border-bottom: 1px solid #444;
+    color: #fff;
+}
+
+.dark-mode .modal-body {
+    background-color: #2a2a2a;
+    color: #fff;
+}
+
+.dark-mode .modal-footer {
+    background-color: #1f1f1f;
+    border-top: 1px solid #444;
+}
+
+.dark-mode .btn-close {
+    filter: invert(1);
+}
+
     </style>
     <link rel="icon" type="image/png" href="../img/logo.png">
 </head>
@@ -218,6 +247,10 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
             <div class="col-md-6"><label>Username</label><input type="text" name="username" class="form-control"
                     required></div>
             <div class="col-md-6"><label>Email</label><input type="email" name="email" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label>No Telepon</label>
+                <input type="text" name="no_telp" class="form-control" required>
             </div>
             <div class="col-md-6"><label>Password</label><input type="text" name="password" class="form-control"
                     required></div>
@@ -262,6 +295,7 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                         <th>Nama</th>
                         <th>Username</th>
                         <th>Email</th>
+                        <th>No Telp</th>
                         <th>Role</th>
                         <th>Tanggal Buat Akun</th>
                         <th>Aksi</th>
@@ -275,6 +309,7 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                             <td><?= htmlspecialchars($row['nama_lengkap']) ?></td>
                             <td><?= htmlspecialchars($row['username']) ?></td>
                             <td><?= htmlspecialchars($row['email']) ?></td>
+                            <td><?= htmlspecialchars($row['no_telp']) ?></td>
                             <td><?= htmlspecialchars($row['role']) ?></td>
                             <td><?= date('d-m-Y H:i', strtotime($row['tanggal_dibuat'])) ?></td>
                             <td>
@@ -308,6 +343,10 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                                         <div class="mb-2">
                                             <label>Email</label>
                                             <input type="email" name="email" class="form-control" value="<?= $row['email'] ?>" required>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>No Telepon</label>
+                                            <input type="text" name="no_telp" class="form-control" value="<?= $row['no_telp'] ?>" required>
                                         </div>
                                         <div class="mb-2">
                                             <label>Role</label>
@@ -378,6 +417,7 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                     <th>Nama</th>
                     <th>Username</th>
                     <th>Email</th>
+                    <th>No Telp</th>
                     <th>Role</th>
                     <th>Tanggal Buat Akun</th>
                     <th>Aksi</th>
@@ -391,6 +431,7 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                         <td><?= htmlspecialchars($row['nama_lengkap']) ?></td>
                         <td><?= htmlspecialchars($row['username']) ?></td>
                         <td><?= htmlspecialchars($row['email']) ?></td>
+                        <td><?= htmlspecialchars($row['no_telp']) ?></td>
                         <td><?= htmlspecialchars($row['role']) ?></td>
                         <td><?= date('d-m-Y H:i', strtotime($row['tanggal_dibuat'])) ?></td>
                         <td>
@@ -428,6 +469,10 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
                                         <div class="mb-2">
                                             <label>Email</label>
                                             <input type="email" name="email" class="form-control" value="<?= $row['email'] ?>" required>
+                                        </div>
+                                        <div class="mb-2">
+                                            <label>No Telepon</label>
+                                            <input type="text" name="no_telp" class="form-control" value="<?= $row['no_telp'] ?>" required>
                                         </div>
                                         <div class="mb-2">
                                             <label>Role</label>

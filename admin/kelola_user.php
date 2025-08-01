@@ -61,8 +61,11 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
     <title>Kelola User</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="icon" type="image/png" href="../img/logo.png">
     <style>
         body {
             margin: 0;

@@ -3,7 +3,21 @@ include '../includes/session.php';
 include '../includes/config.php';
 
 $id_pengguna = $_SESSION['id_pengguna'];
-$query = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id_pengguna' ORDER BY tanggal DESC");
+
+// Ambil limit dari GET, default 5
+$limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 5;
+
+// Ambil halaman sekarang dari GET, default 1
+$page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+$start = ($page - 1) * $limit;
+
+// Ambil total data
+$total_result = mysqli_query($koneksi, "SELECT COUNT(*) AS total FROM tb_absensi WHERE id_pengguna='$id_pengguna'");
+$total_data = mysqli_fetch_assoc($total_result)['total'];
+$total_pages = ceil($total_data / $limit);
+
+// Ambil data sesuai halaman
+$query = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id_pengguna' ORDER BY tanggal DESC LIMIT $start, $limit");
 ?>
 
 <!DOCTYPE html>
@@ -95,6 +109,30 @@ $query = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id
                 padding: 4px 10px;
             }
         }
+
+        .table-responsive {
+            overflow-x: scroll !important;
+            /* Paksa scroll horizontal */
+            scrollbar-width: auto;
+            /* Untuk Firefox */
+        }
+
+        /* Untuk Chrome, Edge, Safari */
+        .table-responsive::-webkit-scrollbar {
+            height: 8px;
+            /* Atur tinggi scrollbar horizontal */
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #888;
+            /* Warna thumb scrollbar */
+            border-radius: 4px;
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
     </style>
 </head>
 
@@ -109,7 +147,7 @@ $query = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id
                 </div>
                 <div class="text-end small">
                     <div>いらっしゃいませ, <?= $_SESSION['username']; ?> (<?= $_SESSION['role']; ?>)</div>
-                    <a href="auth/logout.php" class="btn btn-outline-light btn-sm mt-1">Logout</a>
+                    <a href="../auth/logout.php" class="btn btn-outline-light btn-sm mt-1">Logout</a>
                 </div>
             </div>
 
@@ -118,14 +156,25 @@ $query = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id
                 <img src="../img/logo.png" alt="Logo LPK" class="mb-1" style="height: 45px;"> <!-- DIBESARKAN -->
                 <div class="fw-bold text-white" style="font-size: 1rem;">LPK AIKOKU TERPADU</div>
                 <div class="small">いらっしゃいませ, <?= $_SESSION['username']; ?> (<?= $_SESSION['role']; ?>)</div>
-                <a href="auth/logout.php" class="btn btn-outline-light btn-sm mt-1">Logout</a>
+                <a href="../auth/logout.php" class="btn btn-outline-light btn-sm mt-1">Logout</a>
             </div>
         </div>
     </nav>
 
     <div class="container mt-5">
         <h3>Riwayat Absensi</h3>
-        <div class="table-responsive">
+        <!-- Show per page selector -->
+        <form method="GET" class="d-flex align-items-center mb-3">
+            <label class="me-2">Tampilkan</label>
+            <select name="limit" onchange="this.form.submit()" class="form-select w-auto me-2">
+                <?php foreach ([5, 10, 15, 20, 25] as $opt): ?>
+                    <option value="<?= $opt ?>" <?= $limit == $opt ? 'selected' : '' ?>><?= $opt ?></option>
+                <?php endforeach; ?>
+            </select>
+            <label>data</label>
+        </form>
+       <div class="table-responsive mb-4 pb-2">
+
             <table class="table table-bordered">
                 <thead class="table-dark">
                     <tr>
@@ -226,8 +275,18 @@ $query = mysqli_query($koneksi, "SELECT * FROM tb_absensi WHERE id_pengguna='$id
                     <?php endwhile; ?>
                 </tbody>
             </table>
+            <!-- Pagination -->
+            <nav>
+                <ul class="pagination">
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <li class="page-item <?= $i == $page ? 'active' : '' ?>">
+                            <a class="page-link" href="?page=<?= $i ?>&limit=<?= $limit ?>"><?= $i ?></a>
+                        </li>
+                    <?php endfor; ?>
+                </ul>
+            </nav>
+            <a href="../dashboard_siswa.php" class="btn btn-secondary">Kembali</a>
         </div>
-        <a href="../dashboard_siswa.php" class="btn btn-secondary">Kembali</a>
     </div>
 </body>
 

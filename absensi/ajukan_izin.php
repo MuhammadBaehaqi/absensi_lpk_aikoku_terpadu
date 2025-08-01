@@ -140,7 +140,7 @@ if ($absen && !empty($absen['jam_masuk'])) {
                 </div>
                 <div class="text-end small">
                     <div>いらっしゃいませ, <?= $_SESSION['username']; ?> (<?= $_SESSION['role']; ?>)</div>
-                    <a href="auth/logout.php" class="btn btn-outline-light btn-sm mt-1">Logout</a>
+                    <a href="../auth/logout.php" class="btn btn-outline-light btn-sm mt-1">Logout</a>
                 </div>
             </div>
 
@@ -149,7 +149,7 @@ if ($absen && !empty($absen['jam_masuk'])) {
                 <img src="../img/logo.png" alt="Logo LPK" class="mb-1" style="height: 45px;"> <!-- DIBESARKAN -->
                 <div class="fw-bold text-white" style="font-size: 1rem;">LPK AIKOKU TERPADU</div>
                 <div class="small">いらっしゃいませ, <?= $_SESSION['username']; ?> (<?= $_SESSION['role']; ?>)</div>
-                <a href="auth/logout.php" class="btn btn-outline-light btn-sm mt-1">Logout</a>
+                <a href="../auth/logout.php" class="btn btn-outline-light btn-sm mt-1">Logout</a>
             </div>
         </div>
     </nav>

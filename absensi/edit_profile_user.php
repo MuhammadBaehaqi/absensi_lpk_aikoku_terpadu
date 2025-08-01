@@ -1,36 +1,21 @@
 <?php
-include '../includes/config.php';
 include '../includes/session.php';
+include '../includes/config.php';
 
-$id_pengguna = $_SESSION['id_pengguna'];
-$tanggal = date('Y-m-d');
-$jam = date('H:i:s');
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $alasan = htmlspecialchars($_POST['alasan']);
-    // Simpan koreksi, tanpa ubah absensi utama
-    mysqli_query($koneksi, "INSERT INTO tb_koreksi_absen (id_pengguna, tanggal, waktu_koreksi, alasan) 
-    VALUES ('$id_pengguna', '$tanggal', NOW(), '$alasan')");
-
-
-    // Catat koreksi
-    mysqli_query($koneksi, "INSERT INTO tb_koreksi_absen (id_pengguna, tanggal, waktu_koreksi, alasan) 
-                            VALUES ('$id_pengguna', '$tanggal', NOW(), '$alasan')");
-
-    unset($_SESSION['koreksi_alpha']);
-    echo "<script>alert('Absen berhasil dan sedang dikoreksi.'); window.location.href='../dashboard_siswa.php';</script>";
-    exit;
-}
+$id = $_SESSION['id_pengguna'];
+$query = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE id_pengguna = '$id'");
+$data = mysqli_fetch_assoc($query);
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
-    <title>Koreksi Alpha</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profil</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../img/logo.png">
     <style>
         .logo-img {
             height: 40px;
@@ -115,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body class="bg-light">
-     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
         <div class="container text-white">
             <!-- Desktop View (Logo kiri, Salam kanan) -->
             <div class="d-none d-md-flex justify-content-between align-items-center w-100">
@@ -128,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <a href="../auth/logout.php" class="btn btn-outline-light btn-sm mt-1">Logout</a>
                 </div>
             </div>
-    
+
             <!-- Mobile View (Semua tengah, logo lebih besar, teks tengah) -->
             <div class="d-block d-md-none w-100 text-center">
                 <img src="../img/logo.png" alt="Logo LPK" class="mb-1" style="height: 45px;"> <!-- DIBESARKAN -->
@@ -138,18 +123,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
     </nav>
-    <div class="container mt-5">
-        <h4>Koreksi Kehadiran (Terlambat Absen)</h4>
-        <p>Kamu sudah dianggap <strong>Alpha</strong> karena tidak absen tepat waktu.<br>
-            Jika kamu benar-benar hadir, silakan isi alasan di bawah ini.</p>
-        <form method="POST">
-            <div class="mb-3">
-                <label>Alasan:</label>
-                <textarea name="alasan" class="form-control" required rows="3"></textarea>
+
+    <div class="container mt-2 mt-md-4">
+
+        <div class="card mx-auto" style="max-width: 600px;">
+            <div class="card-body">
+                <h4 class="card-title text-center mb-4">✏️ Edit Profil Siswa</h4>
+                <form method="POST" action="proses_edit_profile_user.php">
+                    <input type="hidden" name="id_pengguna" value="<?= $data['id_pengguna']; ?>">
+
+                    <div class="mb-3">
+                        <label>Nama Lengkap</label>
+                        <input type="text" name="nama_lengkap" class="form-control"
+                            value="<?= $data['nama_lengkap']; ?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Username (Tidak Bisa Diubah)</label>
+                        <input type="text" class="form-control" value="<?= $data['username']; ?>" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" value="<?= $data['email']; ?>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>No HP</label>
+                        <input type="text" name="no_hp" class="form-control" value="<?= $data['no_telp']; ?>" required>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+                        <a href="../dashboard_siswa.php" class="btn btn-secondary">Kembali</a>
+                    </div>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary">Ajukan Koreksi dan Absen</button>
-            <a href="../dashboard_siswa.php" class="btn btn-secondary">Batal</a>
-        </form>
+        </div>
     </div>
 </body>
 

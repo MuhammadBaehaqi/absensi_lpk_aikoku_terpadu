@@ -248,6 +248,14 @@ if (mysqli_num_rows($izin) > 0) {
                 <a href="absensi/riwayat_siswa.php" class="btn btn-secondary w-100 py-2" data-bs-toggle="tooltip"
                     title="Lihat riwayat absensi Anda">Riwayat Absensi</a>
             </div>
+            <div class="col-md-3 col-6">
+                <a href="absensi/edit_profile_user.php" class="btn btn-outline-primary w-100 py-2" data-bs-toggle="tooltip"
+                    title="Ubah data pribadi Anda">Edit Profil</a>
+            </div>
+            <div class="col-md-3 col-6">
+                <a href="absensi/ganti_password_user.php" class="btn btn-outline-primary w-100 py-2" data-bs-toggle="tooltip"
+                    title="Ubah Password Baru">Ganti Password</a>
+            </div>
         </div>
 
         <p class="text-muted mt-3 text-center small">

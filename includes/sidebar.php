@@ -4,6 +4,7 @@ $current = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 $pageTitles = [
     'dashboard_admin.php' => 'Dashboard Admin',
     'kelola_user.php' => 'Kelola User',
+    'ganti_password_admin.php' => 'Ganti Password Admin',
     'input_manual.php' => 'Input Absensi Manual',
     'verifikasi_izin.php' => 'Verifikasi Izin/Sakit',
     'verifikasi_koreksi.php' => 'Verifikasi Koreksi Kehadiran',
@@ -298,6 +299,14 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
                 padding: 2px 6px;
             }
         }
+
+        .sidebar-brand {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff !important;
+        }
     </style>
 </head>
 
@@ -308,10 +317,11 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
 
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar text-white">
-        <div class="sidebar-inner p-3 pt-4">
-            <div class="d-flex align-items-center mb-3">
+        <div class="sidebar-inner p-3 pt-4 mt-3">
+
+            <div class="d-flex align-items-center mb-3 px-2 pt-2 pb-3 border-bottom">
                 <img src="../img/logo.png" alt="Logo" class="sidebar-logo rounded-circle">
-                <div class="sidebar-brand ms-2">LPK AIKOKU TERPADU</div>
+                <div class="sidebar-brand ms-2 text-white">LPK AIKOKU TERPADU</div>
             </div>
 
             <ul class="nav flex-column">
@@ -325,6 +335,12 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
                     <a href="../admin/kelola_user.php"
                         class="nav-link text-white <?= $current === 'kelola_user.php' ? 'active' : '' ?>">
                         <i class="bi bi-people me-2"></i>Kelola User
+                    </a>
+                </li>
+                <li class="nav-item mb-2">
+                    <a href="../admin/ganti_password_admin.php"
+                        class="nav-link text-white <?= $current === 'ganti_password.php' ? 'active' : '' ?>">
+                        <i class="bi bi-key me-2"></i>Ganti Password
                     </a>
                 </li>
                 <li class="nav-item mb-2">

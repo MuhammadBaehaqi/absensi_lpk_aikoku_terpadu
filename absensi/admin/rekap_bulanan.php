@@ -1,6 +1,6 @@
 <?php
-include '../includes/session.php';
-include '../includes/config.php';
+include '../../includes/session.php';
+include '../../includes/config.php';
 
 // Ambil siswa
 $siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='siswa'");
@@ -31,7 +31,7 @@ if (!empty($id_pengguna)) {
     <title>Rekap Bulanan Absensi</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="icon" type="image/png" href="../img/logo.png">
+    <link rel="icon" type="image/png" href="../../img/logo.png">
     <style>
         body {
             margin: 0;
@@ -88,7 +88,7 @@ if (!empty($id_pengguna)) {
 </head>
 
 <body>
-    <?php include '../includes/sidebar.php'; ?>
+    <?php include '../../includes/sidebar.php'; ?>
     <div class="content container">
         <h3>Rekap Absensi Bulanan</h3>
 
@@ -178,14 +178,14 @@ const grafikAbsensi = new Chart(ctx, {
                     </ul>
                 </div>
             </div>
-            <a href="rekap_bulanan_pdf.php?id_pengguna=<?= $id_pengguna ?>&bulan=<?= $bulan ?>&tahun=<?= $tahun ?>"
+            <a href="/absensi/absensi/admin/cetak pdf/rekap_bulanan_pdf.php?id_pengguna=<?= $id_pengguna ?>&bulan=<?= $bulan ?>&tahun=<?= $tahun ?>"
                 target="_blank" class="btn btn-danger mt-3">Cetak PDF</a>
 
         <?php elseif (!empty($id_pengguna)): ?>
             <div class="alert alert-warning">Tidak ada data absensi pada bulan tersebut.</div>
         <?php endif; ?>
 
-        <a href="../admin/dashboard_admin.php" class="btn btn-secondary mt-3">Kembali</a>
+        <a href="../../admin/dashboard_admin.php" class="btn btn-secondary mt-3">Kembali</a>
     </div>
 </body>
 

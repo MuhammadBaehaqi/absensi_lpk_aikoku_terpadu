@@ -1,6 +1,6 @@
 <?php
-include '../includes/session.php';
-include '../includes/config.php';
+include '../../includes/session.php';
+include '../../includes/config.php';
 
 $bulan = $_GET['bulan'] ?? date('m');
 $tahun = $_GET['tahun'] ?? date('Y');
@@ -41,7 +41,7 @@ $rekap = mysqli_query($koneksi, $sql);
 <head>
     <title>Rekap Semua Siswa Bulanan</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="icon" type="image/png" href="../img/logo.png">
+    <link rel="icon" type="image/png" href="../../img/logo.png">
     <style>
         body {
             margin: 0;
@@ -144,14 +144,13 @@ $rekap = mysqli_query($koneksi, $sql);
 </head>
 
 <body>
-    <?php include '../includes/sidebar.php'; ?>
+    <?php include '../../includes/sidebar.php'; ?>
     <div class="content container">
         <div class="card shadow mb-4">
             <div class="card-header bg-dark text-white">
                 <h5 class="mb-0">Rekap Absensi Semua Siswa</h5>
             </div>
             <div class="card-body">
-
                 <form method="GET" class="row g-3 mb-4">
                     <div class="col-md-4">
                         <label>Bulan</label>
@@ -224,11 +223,11 @@ $rekap = mysqli_query($koneksi, $sql);
                         </ul>
                     </nav>
                 </div>
-                <a href="rekap_bulanan_semua_pdf.php?bulan=<?= $bulan ?>&tahun=<?= $tahun ?>" target="_blank"
+                <a href="/absensi/absensi/admin/cetak pdf/rekap_bulanan_semua_pdf.php?bulan=<?= $bulan ?>&tahun=<?= $tahun ?>" target="_blank"
                     class="btn btn-danger mt-3">
                     Cetak PDF Semua Siswa
                 </a>
-                <a href="../admin/dashboard_admin.php" class="btn btn-secondary mt-3">Kembali</a>
+                <a href="../../admin/dashboard_admin.php" class="btn btn-secondary mt-3">Kembali</a>
             </div>
         </div>
     </div>

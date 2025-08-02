@@ -320,79 +320,79 @@ $judulHalaman = $pageTitles[$current] ?? 'Halaman Admin';
         <div class="sidebar-inner p-3 pt-4 mt-3">
 
             <div class="d-flex align-items-center mb-3 px-2 pt-2 pb-3 border-bottom">
-                <img src="../img/logo.png" alt="Logo" class="sidebar-logo rounded-circle">
+                <img src="/absensi/img/logo.png" alt="Logo" class="sidebar-logo rounded-circle">
                 <div class="sidebar-brand ms-2 text-white">LPK AIKOKU TERPADU</div>
             </div>
 
             <ul class="nav flex-column">
                 <li class="nav-item mb-2">
-                    <a href="../admin/dashboard_admin.php"
+                    <a href="/absensi/admin/dashboard_admin.php"
                         class="nav-link text-white <?= $current === 'dashboard_admin.php' ? 'active' : '' ?>">
                         <i class="bi bi-speedometer2 me-2"></i>Dashboard
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="../admin/kelola_user.php"
+                    <a href="/absensi/admin/user/kelola_user.php"
                         class="nav-link text-white <?= $current === 'kelola_user.php' ? 'active' : '' ?>">
                         <i class="bi bi-people me-2"></i>Kelola User
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="../admin/ganti_password_admin.php"
+                    <a href="/absensi/admin/user/ganti_password_admin.php"
                         class="nav-link text-white <?= $current === 'ganti_password.php' ? 'active' : '' ?>">
                         <i class="bi bi-key me-2"></i>Ganti Password
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="../absensi/input_manual.php"
+                    <a href="/absensi/absensi/admin/input_manual.php"
                         class="nav-link text-white <?= $current === 'input_manual.php' ? 'active' : '' ?>">
                         <i class="bi bi-pencil-square me-2"></i>Input Absensi Manual
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="../admin/verifikasi_koreksi.php"
+                    <a href="/absensi/admin/verifikasi/verifikasi_koreksi.php"
                         class="nav-link text-white <?= $current === 'verifikasi_koreksi.php' ? 'active' : '' ?>">
                         <i class="bi bi-shield-check me-2"></i>Verifikasi Koreksi Absensi
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="../admin/verifikasi_izin.php"
+                    <a href="/absensi/admin/verifikasi/verifikasi_izin.php"
                         class="nav-link text-white <?= $current === 'verifikasi_izin.php' ? 'active' : '' ?>">
                         <i class="bi bi-check-circle me-2"></i>Verifikasi Izin/Sakit
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="../absensi/data_absensi.php"
+                    <a href="/absensi/absensi/admin/data_absensi.php"
                         class="nav-link text-white <?= $current === 'data_absensi.php' ? 'active' : '' ?>">
                         <i class="bi bi-table me-2"></i>Lihat Data Absensi
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="../absensi/rekap_bulanan.php"
+                    <a href="/absensi/absensi/admin/rekap_bulanan.php"
                         class="nav-link text-white <?= $current === 'rekap_bulanan.php' ? 'active' : '' ?>">
                         <i class="bi bi-bar-chart me-2"></i>Rekap Bulanan Siswa
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="../absensi/rekap_bulanan_semua.php"
+                    <a href="/absensi/absensi/admin/rekap_bulanan_semua.php"
                         class="nav-link text-white <?= $current === 'rekap_bulanan_semua.php' ? 'active' : '' ?>">
                         <i class="bi bi-bar-chart-line me-2"></i>Rekap Semua Siswa<br><span class="ms-4">Bulanan</span>
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="../absensi/rekap_mingguan.php"
+                    <a href="/absensi/absensi/admin/rekap_mingguan.php"
                         class="nav-link text-white <?= $current === 'rekap_mingguan.php' ? 'active' : '' ?>">
                         <i class="bi bi-calendar-week me-2"></i>Rekap Mingguan Siswa
                     </a>
                 </li>
                 <li class="nav-item mb-2">
-                    <a href="../absensi/rekap_mingguan_semua.php"
+                    <a href="/absensi/absensi/admin/rekap_mingguan_semua.php"
                         class="nav-link text-white <?= $current === 'rekap_mingguan_semua.php' ? 'active' : '' ?>">
                         <i class="bi bi-calendar-range me-2"></i>Rekap Mingguan Semua
                     </a>
                 </li>
                 <li class="nav-item mt-3 border-top pt-3">
-                    <a href="../auth/logout.php" class="nav-link text-danger">
+                    <a href="/absensi/auth/logout.php" class="nav-link text-danger">
                         <i class="bi bi-box-arrow-right me-2"></i>Logout
                     </a>
                 </li>

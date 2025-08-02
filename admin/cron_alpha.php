@@ -6,9 +6,13 @@ $tanggal = date('Y-m-d');
 $jam_sekarang = date('H:i');
 $hari = date('N'); // 1 = Senin, ..., 7 = Minggu
 
-// File log dan marker
-$markerFile = __DIR__ . "/alpha_marker_$tanggal.txt";
-$logFile = __DIR__ . "/alpha_log_$tanggal.txt";
+$logDir = __DIR__ . "/log";
+if (!file_exists($logDir)) {
+    mkdir($logDir, 0775, true); // Buat folder log kalau belum ada
+}
+
+$markerFile = $logDir . "/alpha_marker_$tanggal.txt";
+$logFile = $logDir . "/alpha_log_$tanggal.txt";
 
 // Fungsi log
 function logAlpha($pesan)

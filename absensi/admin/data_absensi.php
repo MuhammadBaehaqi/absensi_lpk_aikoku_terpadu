@@ -1,6 +1,6 @@
 <?php
-include '../includes/session.php';
-include '../includes/config.php';
+include '../../includes/session.php';
+include '../../includes/config.php';
 
 // Dropdown siswa
 $siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='siswa'");
@@ -15,7 +15,7 @@ $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
 // Query data absensi (dengan LIMIT)
-$sql = "SELECT a.*, p.nama_lengkap 
+$sql = "SELECT a.*, p.nama_lengkap, p.username 
         FROM tb_absensi a 
         JOIN tb_pengguna p ON a.id_pengguna = p.id_pengguna 
         WHERE 1";
@@ -73,7 +73,7 @@ $total_pages = ceil($total_data / $limit);
     <meta charset="UTF-8">
     <title>Data Absensi Siswa (Filter)</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="icon" type="image/png" href="../img/logo.png">
+    <link rel="icon" type="image/png" href="../../img/logo.png">
     <style>
         body {
             margin: 0;
@@ -175,7 +175,7 @@ $total_pages = ceil($total_data / $limit);
 </head>
 
 <body>
-    <?php include '../includes/sidebar.php'; ?>
+    <?php include '../../includes/sidebar.php'; ?>
     <div class="content container">
         <div class="card shadow mb-4">
             <div class="card-header bg-dark text-white">
@@ -241,7 +241,8 @@ $total_pages = ceil($total_data / $limit);
                         <thead class="table-dark">
                             <tr>
                                 <th>No</th>
-                                <th>Nama</th>
+                                <th>Nama Lengkap</th>
+                                <th>Username</th>
                                 <th>Tanggal</th>
                                 <th>Jam Masuk</th>
                                 <th>Jam Pulang</th>
@@ -255,6 +256,7 @@ $total_pages = ceil($total_data / $limit);
                                 <tr>
                                     <td><?= $no++ ?></td>
                                     <td><?= $row['nama_lengkap'] ?></td>
+                                    <td><?= $row['username'] ?></td>
                                     <td><?= date('d-m-Y', strtotime($row['tanggal'])) ?></td>
                                     <td>
                                         <?= $row['jam_masuk'] ? $row['jam_masuk'] : '<span class="badge bg-secondary">Belum Absen Masuk</span>' ?>
@@ -359,9 +361,11 @@ $total_pages = ceil($total_data / $limit);
 
                 <!-- Tombol Ekspor -->
                 <div class="mt-3">
-                    <a href="export_pdf_manual.php" target="_blank" class="btn btn-danger mb-2">Export PDF Manual</a>
-                    <a href="export_excel.php" class="btn btn-success mb-2">Export ke Excel</a>
-                    <a href="../admin/dashboard_admin.php" class="btn btn-secondary mb-2">Kembali</a>
+                    <a href="/absensi/absensi/admin/cetak pdf/export_pdf_manual.php" target="_blank"
+                        class="btn btn-danger mb-2">Export PDF Manual</a>
+                    <a href="/absensi/absensi/admin/export/export_excel.php" class="btn btn-success mb-2">Export ke
+                        Excel</a>
+                    <a href="../../admin/dashboard_admin.php" class="btn btn-secondary mb-2">Kembali</a>
                 </div>
             </div>
         </div>

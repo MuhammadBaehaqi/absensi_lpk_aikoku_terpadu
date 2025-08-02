@@ -1,6 +1,6 @@
 <?php
-include '../includes/config.php';
-include '../includes/session.php';
+include '../../includes/config.php';
+include '../../includes/session.php';
 
 if (isset($_POST['edit_user'])) {
     $id = $_POST['id_pengguna'];

@@ -1,7 +1,7 @@
 <?php
-require '../vendor/autoload.php';
-include '../includes/session.php';
-include '../includes/config.php';
+require '../../../vendor/autoload.php';
+include '../../../includes/session.php';
+include '../../../includes/config.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;

@@ -8,14 +8,10 @@ $jam = date('H:i:s');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $alasan = htmlspecialchars($_POST['alasan']);
-    // Simpan koreksi, tanpa ubah absensi utama
+    // Simpan koreksi hanya sekali
     mysqli_query($koneksi, "INSERT INTO tb_koreksi_absen (id_pengguna, tanggal, waktu_koreksi, alasan) 
-    VALUES ('$id_pengguna', '$tanggal', NOW(), '$alasan')");
+VALUES ('$id_pengguna', '$tanggal', NOW(), '$alasan')");
 
-
-    // Catat koreksi
-    mysqli_query($koneksi, "INSERT INTO tb_koreksi_absen (id_pengguna, tanggal, waktu_koreksi, alasan) 
-                            VALUES ('$id_pengguna', '$tanggal', NOW(), '$alasan')");
 
     unset($_SESSION['koreksi_alpha']);
     echo "<script>alert('Absen berhasil dan sedang dikoreksi.'); window.location.href='../dashboard_siswa.php';</script>";
@@ -115,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body class="bg-light">
-     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
         <div class="container text-white">
             <!-- Desktop View (Logo kiri, Salam kanan) -->
             <div class="d-none d-md-flex justify-content-between align-items-center w-100">
@@ -128,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <a href="../auth/logout.php" class="btn btn-outline-light btn-sm mt-1">Logout</a>
                 </div>
             </div>
-    
+
             <!-- Mobile View (Semua tengah, logo lebih besar, teks tengah) -->
             <div class="d-block d-md-none w-100 text-center">
                 <img src="../img/logo.png" alt="Logo LPK" class="mb-1" style="height: 45px;"> <!-- DIBESARKAN -->

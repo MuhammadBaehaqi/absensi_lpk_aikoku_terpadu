@@ -1,6 +1,6 @@
 <?php
-include '../includes/session.php';
-include '../includes/config.php';
+include '../../includes/session.php';
+include '../../includes/config.php';
 
 // Ambil semua siswa untuk dropdown
 $siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='siswa'");
@@ -34,7 +34,7 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <title>Input Manual Absensi</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="icon" type="image/png" href="../img/logo.png">
+    <link rel="icon" type="image/png" href="../../img/logo.png">
     <style>
         body {
             margin: 0;
@@ -79,7 +79,7 @@ if (isset($_POST['submit'])) {
 </head>
 
 <body>
-    <?php include '../includes/sidebar.php'; ?>
+    <?php include '../../includes/sidebar.php'; ?>
     <div class="content container">
 
         <h3>Input Absensi Manual</h3>
@@ -119,7 +119,7 @@ if (isset($_POST['submit'])) {
                 </select>
             </div>
             <button type="submit" name="submit" class="btn btn-primary">Simpan</button>
-            <a href="../admin/dashboard_admin.php" class="btn btn-secondary">Kembali</a>
+            <a href="../../admin/dashboard_admin.php" class="btn btn-secondary">Kembali</a>
         </form>
     </div>
 </body>

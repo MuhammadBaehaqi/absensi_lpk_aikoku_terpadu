@@ -1,6 +1,6 @@
 <?php
-include '../includes/session.php';
-include '../includes/config.php';
+include '../../includes/session.php';
+include '../../includes/config.php';
 
 $tgl_awal = $_GET['tgl_awal'] ?? '';
 $tgl_akhir = $_GET['tgl_akhir'] ?? '';
@@ -51,7 +51,7 @@ if (!empty($tgl_awal) && !empty($tgl_akhir)) {
 <head>
     <title>Rekap Mingguan Semua Siswa</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="icon" type="image/png" href="../img/logo.png">
+    <link rel="icon" type="image/png" href="../../img/logo.png">
     <style>
         .main-content {
             margin-left: 250px;
@@ -126,7 +126,7 @@ if (!empty($tgl_awal) && !empty($tgl_akhir)) {
 </head>
 
 <body>
-    <?php include '../includes/sidebar.php'; ?>
+    <?php include '../../includes/sidebar.php'; ?>
     <div class="content px-4">
 
         <h3>Rekap Absensi Mingguan Semua Siswa</h3>
@@ -197,13 +197,13 @@ if (!empty($tgl_awal) && !empty($tgl_akhir)) {
                 </ul>
             </nav>
     
-            <a href="rekap_mingguan_semua_pdf.php?tgl_awal=<?= $tgl_awal ?>&tgl_akhir=<?= $tgl_akhir ?>" target="_blank"
+            <a href="/absensi/absensi/admin/cetak pdf/rekap_mingguan_semua_pdf.php?tgl_awal=<?= $tgl_awal ?>&tgl_akhir=<?= $tgl_akhir ?>" target="_blank"
                 class="btn btn-danger">Cetak PDF</a>
         <?php elseif (!empty($tgl_awal)): ?>
             <div class="alert alert-warning">Tidak ada data absensi dalam minggu ini.</div>
         <?php endif; ?>
     
-        <a href="../admin/dashboard_admin.php" class="btn btn-secondary mt-3">Kembali</a>
+        <a href="../../admin/dashboard_admin.php" class="btn btn-secondary mt-3">Kembali</a>
     </div>
     </body>
     

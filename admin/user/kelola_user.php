@@ -1,6 +1,6 @@
 <?php
-include '../includes/session.php';
-include '../includes/config.php';
+include '../../includes/session.php';
+include '../../includes/config.php';
 
 // Jumlah data per halaman dari select dropdown
 $limit = isset($_GET['limit']) ? (int) $_GET['limit'] : 5;
@@ -65,7 +65,7 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
     <meta charset="UTF-8">
     <title>Kelola User</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="icon" type="image/png" href="../img/logo.png">
+    <link rel="icon" type="image/png" href="../../img/logo.png">
     <style>
         body {
             margin: 0;
@@ -186,37 +186,36 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
         }
 
         /* DARK MODE: Modal Styling */
-.dark-mode .modal-content {
-    background-color: #2a2a2a;
-    color: #fff;
-    border: 1px solid #444;
-}
+        .dark-mode .modal-content {
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid #444;
+        }
 
-.dark-mode .modal-header {
-    background-color: #1f1f1f;
-    border-bottom: 1px solid #444;
-    color: #fff;
-}
+        .dark-mode .modal-header {
+            background-color: #1f1f1f;
+            border-bottom: 1px solid #444;
+            color: #fff;
+        }
 
-.dark-mode .modal-body {
-    background-color: #2a2a2a;
-    color: #fff;
-}
+        .dark-mode .modal-body {
+            background-color: #2a2a2a;
+            color: #fff;
+        }
 
-.dark-mode .modal-footer {
-    background-color: #1f1f1f;
-    border-top: 1px solid #444;
-}
+        .dark-mode .modal-footer {
+            background-color: #1f1f1f;
+            border-top: 1px solid #444;
+        }
 
-.dark-mode .btn-close {
-    filter: invert(1);
-}
-
+        .dark-mode .btn-close {
+            filter: invert(1);
+        }
     </style>
     <link rel="icon" type="image/png" href="../img/logo.png">
 </head>
 
-<?php include '../includes/sidebar.php'; ?>
+<?php include '../../includes/sidebar.php'; ?>
 <div class="main-content">
     <?php if (isset($_SESSION['toast'])): ?>
         <div class="position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
@@ -267,7 +266,7 @@ $data_siswa = mysqli_query($koneksi, "SELECT * FROM tb_pengguna WHERE role='sisw
             </div>
             <div class="col-12">
                 <button class="btn btn-primary" name="submit">Simpan</button>
-                <a href="dashboard_admin.php" class="btn btn-secondary">Kembali</a>
+                <a href="../dashboard_admin.php" class="btn btn-secondary">Kembali</a>
             </div>
         </form>
     </div>

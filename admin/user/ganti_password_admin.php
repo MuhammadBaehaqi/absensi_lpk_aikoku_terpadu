@@ -1,6 +1,6 @@
 <?php
-include '../includes/session.php';
-include '../includes/config.php';
+include '../../includes/session.php';
+include '../../includes/config.php';
 
 $id_pengguna = $_SESSION['id_pengguna'];
 
@@ -36,7 +36,7 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <title>Ganti Password</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="icon" type="image/png" href="../img/logo.png">
+    <link rel="icon" type="image/png" href="../../img/logo.png">
     <style>
         /* Card dalam dark mode */
         .dark-mode .card {
@@ -66,7 +66,7 @@ if (isset($_POST['submit'])) {
 <body>
 
     <body>
-        <?php include '../includes/sidebar.php'; ?>
+        <?php include '../../includes/sidebar.php'; ?>
 
         <div class="content container mt-5">
             <div class="card shadow mx-auto p-4" style="max-width: 550px;">

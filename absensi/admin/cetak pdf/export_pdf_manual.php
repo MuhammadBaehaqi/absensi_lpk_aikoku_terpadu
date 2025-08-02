@@ -1,9 +1,9 @@
 <?php
-require_once '../dompdf-3.1.0/dompdf/autoload.inc.php';
+require_once '../../../dompdf-3.1.0/dompdf/autoload.inc.php';
 use Dompdf\Dompdf;
 
-include '../includes/session.php';
-include '../includes/config.php';
+include '../../../includes/session.php';
+include '../../../includes/config.php';
 
 // Ambil data absensi
 $query = mysqli_query($koneksi, "

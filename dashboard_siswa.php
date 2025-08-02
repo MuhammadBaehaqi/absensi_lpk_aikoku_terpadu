@@ -58,9 +58,10 @@ if (mysqli_num_rows($izin) > 0) {
                 $badge = '<span class="badge bg-warning text-dark">Menunggu Koreksi ⚠️</span>';
             } elseif ($row['status'] == 'Disetujui') {
                 $badge = '<span class="badge bg-info text-dark">Koreksi Diterima 📝</span>';
-            } else {
-                $badge = '<span class="badge bg-danger">Alpha ❌</span>';
+            } elseif ($row['status'] == 'Ditolak') {
+                $badge = '<span class="badge bg-danger">Alpha ❌ (Ditolak Ajukan Koreksi)</span>';
             }
+
         } else {
             $badge = '<span class="badge bg-danger">Alpha ❌</span>';
         }
@@ -166,6 +167,16 @@ if (mysqli_num_rows($izin) > 0) {
                 padding: 4px 10px;
             }
         }
+
+        .btn-outline-purple {
+            border-color: #6f42c1;
+            color: #6f42c1;
+        }
+
+        .btn-outline-purple:hover {
+            background-color: #6f42c1;
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -197,9 +208,13 @@ if (mysqli_num_rows($izin) > 0) {
     <div class="mt-3 text-center">
         Status Kehadiran Hari Ini: <?= $badge ?>
         <?php
-        // Cek apakah sudah absen masuk tapi belum absen pulang
         $peringatanPulang = '';
-        if ($absen && !empty($absen['jam_masuk']) && empty($absen['jam_pulang'])) {
+        if (
+            $absen &&
+            !empty($absen['jam_masuk']) &&
+            empty($absen['jam_pulang']) &&
+            !isset($jenis) // artinya tidak sedang izin/sakit
+        ) {
             $peringatanPulang = '<div class="alert alert-warning mt-3 mx-auto text-center" style="max-width: 600px;">
         ⚠️ <strong>Kamu belum absen pulang hari ini.</strong> Pastikan absen sebelum pukul <strong>18:00</strong>!
     </div>';
@@ -249,12 +264,12 @@ if (mysqli_num_rows($izin) > 0) {
                     title="Lihat riwayat absensi Anda">Riwayat Absensi</a>
             </div>
             <div class="col-md-3 col-6">
-                <a href="absensi/edit_profile_user.php" class="btn btn-outline-primary w-100 py-2" data-bs-toggle="tooltip"
-                    title="Ubah data pribadi Anda">Edit Profil</a>
+                <a href="absensi/edit_profile_user.php" class="btn btn-outline-primary w-100 py-2"
+                    data-bs-toggle="tooltip" title="Ubah data pribadi Anda">Edit Profil</a>
             </div>
             <div class="col-md-3 col-6">
-                <a href="absensi/ganti_password_user.php" class="btn btn-outline-primary w-100 py-2" data-bs-toggle="tooltip"
-                    title="Ubah Password Baru">Ganti Password</a>
+                <a href="absensi/ganti_password_user.php" class="btn btn-outline-purple w-100 py-2"
+                    data-bs-toggle="tooltip" title="Ubah Password Baru">Ganti Password</a>
             </div>
         </div>
 
